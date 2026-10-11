@@ -22,7 +22,7 @@ main{padding:15px}.hero,.card{background:var(--paper);border:1px solid var(--lin
 .points{display:flex;justify-content:space-between;align-items:center;background:#fff9e8;border:1px solid #f1e7c7;border-radius:17px;padding:12px 14px;margin-bottom:12px}.points strong{font-size:22px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px}.grid button{background:white;border:1px solid var(--line);border-radius:16px;padding:12px 5px;font-weight:800}.grid span{display:block;font-size:21px}
 .nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:#fffdf9f2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:7px}.nav button{border:0;background:transparent;color:#99919f;padding:4px}.nav button.active{color:var(--lav);font-weight:900}.nav b{display:block;font-size:18px}.nav small{font-size:9px}
 .section{font-size:15px;font-weight:900;margin:18px 2px 9px}.search{display:flex;gap:7px;margin-bottom:12px}.search input,.field textarea,.field input,.field select{width:100%;border:1px solid var(--line);border-radius:12px;background:white;padding:11px}.search input{flex:1}.message{padding:11px 0;border-bottom:1px solid var(--line)}.message:last-child{border:0}.live{color:#d85f6c;font-weight:900}.notice{font-size:11px;color:var(--muted);background:#f7f3f8;border-radius:12px;padding:9px 10px;line-height:1.5}
-.modalbg{position:fixed;inset:0;background:#312a3c66;z-index:20;display:grid;place-items:end center;padding:15px}.modal{width:min(500px,100%);background:var(--paper);padding:17px;border-radius:22px}.hidden{display:none}.field{margin:10px 0}.field label{display:block;font-size:11px;font-weight:800;margin-bottom:5px}
+.modalbg{position:fixed;inset:0;background:#312a3c66;z-index:20;display:grid;place-items:end center;padding:15px}.modal{width:min(500px,100%);background:var(--paper);padding:17px;border-radius:22px}.hidden{display:none!important}.field{margin:10px 0}.field label{display:block;font-size:11px;font-weight:800;margin-bottom:5px}
 .stat{font-size:23px;font-weight:900;color:var(--lav)}.bar{height:8px;border-radius:999px;background:#eee8f1;overflow:hidden}.bar div{height:100%;background:var(--lav)}
 
 /* v2: smartphone-app first */
@@ -455,7 +455,7 @@ if(APP.onboarded) showInstallHint();
 
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js?v=3").catch(()=>{});
+    navigator.serviceWorker.register("./sw.js?v=4").catch(()=>{});
   });
 }
 </script>

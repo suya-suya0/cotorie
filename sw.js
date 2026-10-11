@@ -1,4 +1,4 @@
-const CACHE="cotorie-v3";
+const CACHE="cotorie-v4";
 const STATIC=["./manifest.webmanifest","./icon-192.png","./icon-512.png"];
 
 self.addEventListener("install",event=>{
@@ -16,15 +16,10 @@ self.addEventListener("activate",event=>{
 
 self.addEventListener("fetch",event=>{
   const req=event.request;
-
-  // Always prefer the newest HTML from the network.
   if(req.mode==="navigate"){
-    event.respondWith(
-      fetch(req).catch(()=>caches.match("./index.html"))
-    );
+    event.respondWith(fetch(req).catch(()=>caches.match("./index.html")));
     return;
   }
-
   event.respondWith(
     caches.match(req).then(cached=>{
       if(cached) return cached;
