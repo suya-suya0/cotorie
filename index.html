@@ -217,6 +217,15 @@ const casts=[
 {name:"みこと",age:28,area:"神奈川",a:"🫖",status:"ラジオ中",tags:["紅茶","映画","旅行"],bio:"聞くのが好きです。愚痴も歓迎◎"},
 {name:"ひより",age:24,area:"埼玉",a:"🐤",status:"今夜ログイン",tags:["アニメ","料理","猫"],bio:"最近は作り置きにハマってます。"}
 ];
+const ATAME_PEOPLE=[
+  {a:"🎧",name:"ゆう",age:29,area:"東京",lastMin:5,tags:["音楽","ゲーム","晩酌"],online:true,newUser:true},
+  {a:"🦊",name:"さく",age:27,area:"東京",lastMin:18,tags:["アニメ","旅行","猫"],online:true,newUser:false},
+  {a:"🌿",name:"れん",age:34,area:"千葉",lastMin:64,tags:["植物","読書"],online:false,newUser:false},
+  {a:"☕",name:"りく",age:31,area:"神奈川",lastMin:12,tags:["カフェ","映画"],online:true,newUser:true},
+  {a:"🎮",name:"ハル",age:26,area:"埼玉",lastMin:33,tags:["ゲーム","アニメ"],online:false,newUser:false},
+  {a:"📚",name:"ナオ",age:32,area:"東京",lastMin:8,tags:["読書","映画","カフェ"],online:true,newUser:false}
+];
+
 function save(){
   localStorage.role=S.role;
   localStorage.points=S.points;
@@ -235,15 +244,7 @@ function userMy(){return `<div class="hero"><h1>マイページ</h1><p class="mu
 <button class="btn alt full" style="margin-top:12px" onclick="resetDemo()">初回登録からやり直す</button>`}
 function castHome(){return `<div class="hero"><h1>おかえりなさい、${esc(APP.displayName||"ねむ")}さん 🌙</h1><p class="muted">今日も無理なく、話せる範囲で。</p></div><div class="card"><div class="meta">今月の報酬</div><div class="stat">${S.earn}円</div><p>あと${Math.max(0,1200-S.earn)}円で換金できます</p><div class="bar"><div style="width:${Math.min(100,S.earn/12)}%"></div></div></div><div class="grid"><button onclick="go('search')"><span>💌</span>アタメ</button><button onclick="go('radio')"><span>🎙️</span>配信</button><button onclick="go('messages')"><span>✉️</span>返信</button></div><div class="card"><div class="row space"><div><strong>今お話できます</strong><p>プロフィールに表示されます</p></div><button class="btn soft">ON</button></div></div>`}
 function castSearch(){
-  const people=[
-    {a:"🎧",name:"ゆう",age:29,area:"東京",lastMin:5,tags:["音楽","ゲーム","晩酌"],online:true,newUser:true},
-    {a:"🦊",name:"さく",age:27,area:"東京",lastMin:18,tags:["アニメ","旅行","猫"],online:true,newUser:false},
-    {a:"🌿",name:"れん",age:34,area:"千葉",lastMin:64,tags:["植物","読書"],online:false,newUser:false},
-    {a:"☕",name:"りく",age:31,area:"神奈川",lastMin:12,tags:["カフェ","映画"],online:true,newUser:true},
-    {a:"🎮",name:"ハル",age:26,area:"埼玉",lastMin:33,tags:["ゲーム","アニメ"],online:false,newUser:false},
-    {a:"📚",name:"ナオ",age:32,area:"東京",lastMin:8,tags:["読書","映画","カフェ"],online:true,newUser:false}
-  ];
-
+  const people=ATAME_PEOPLE;
   const current=atameTemplates[S.atameTemplate] || atameTemplates[0];
   const remaining=people.filter(p=>!S.atameSent[p.name]).length;
 
@@ -308,9 +309,7 @@ function castSearch(){
       <h3>表示できるユーザーがいません</h3>
       <p>条件を変えるか、新しいユーザーを待ってね。</p>
     </div>
-
-    <script type="application/json" id="atamePeople">${JSON.stringify(people)}</script>
-  `;
+`;
 }
 function castMessages(){return `<div class="section">受信メッセージ <span class="meta">返信で12円</span></div><div class="card">${[["🎧","ゆう","昨日ラジオ楽しかった！"],["🦊","さく","おすすめしてた本、買ったよ"],["☕","りく","今夜も話せる？"]].map(x=>`<div class="message row space"><div class="row"><div class="avatar">${x[0]}</div><div><strong>${x[1]}</strong><div class="meta">${x[2]}</div></div></div><button class="btn alt" onclick="reply()">返信</button></div>`).join("")}</div>`}
 function castRadio(){return `<div class="hero"><h1>ラジオを始める 🎙️</h1><p class="muted">顔出しなし。3分後からリスナーは2pt/分。</p></div><div class="card"><div class="field"><label>タイトル</label><input value="眠れない人の夜更かし雑談"></div><div class="field"><label>カテゴリ</label><select><option>雑談</option><option>ゲーム</option><option>お悩み・愚痴</option><option>趣味</option></select></div><button class="btn full" onclick="simple('配信開始','今回は画面だけの試作です。')">配信を開始する</button></div>`}
@@ -334,8 +333,7 @@ function charge(){show(`<h3>ポイント追加</h3><p class="muted">試作なの
 function listen(){show(`<h3>🎙️ 無料3分を再生中…</h3><p class="muted">3分を超えると2pt/分。</p><button class="btn full" onclick="radioMinute()">2ptで1分続ける</button>`)}function radioMinute(){if(S.points<2)return alert("ポイント不足");S.points-=2;save();closeM();render()}
 
 function getAtamePeople(){
-  const el=document.querySelector("#atamePeople");
-  return el ? JSON.parse(el.textContent) : [];
+  return ATAME_PEOPLE.map(p=>({...p,tags:[...p.tags]}));
 }
 function formatLast(min){
   if(min<60) return `${min}分前`;
@@ -457,7 +455,7 @@ if(APP.onboarded) showInstallHint();
 
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+    navigator.serviceWorker.register("./sw.js?v=3").catch(()=>{});
   });
 }
 </script>
