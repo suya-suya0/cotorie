@@ -1,0 +1,69 @@
+name: Deploy latest Cotorie
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "index_v*.html"
+      - "manifest.webmanifest"
+      - "sw.js"
+      - "icon-192.png"
+      - "icon-512.png"
+      - ".github/workflows/deploy-cotorie.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare site
+        shell: bash
+        run: |
+          set -e
+          mkdir -p public
+
+          latest=$(find . -maxdepth 1 -type f -name 'index_v*.html' -printf '%f\n' | sort -V | tail -n 1)
+
+          if [ -z "$latest" ]; then
+            echo "No index_v*.html found"
+            exit 1
+          fi
+
+          echo "Deploying $latest"
+          cp "$latest" public/index.html
+
+          for f in manifest.webmanifest sw.js icon-192.png icon-512.png; do
+            if [ -f "$f" ]; then
+              cp "$f" "public/$f"
+            fi
+          done
+
+          touch public/.nojekyll
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
