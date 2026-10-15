@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="コトリエ">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="theme-color" content="#8a78c8">
+<title>コトリエ / Cotorie</title>
+<style>
+:root{--bg:#fbf8f3;--paper:#fffdf9;--lav:#8a78c8;--lav2:#d8cef3;--blue:#dceef8;--pink:#f6dfe6;--ink:#383345;--muted:#7d7689;--line:#ebe4ef}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#fbf8f3,#f8f3fb);color:var(--ink);font-family:"Yu Gothic",system-ui,sans-serif}
+.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:84px}.top{position:sticky;top:0;z-index:5;background:#fbf8f3ee;backdrop-filter:blur(10px);padding:15px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:900;font-size:20px}.brand small{display:block;color:var(--muted);font-size:10px;font-weight:600}.role{border:1px solid var(--lav2);background:white;color:var(--lav);border-radius:999px;padding:8px 10px;font-weight:800}
+main{padding:15px}.hero,.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:15px;margin-bottom:12px;box-shadow:0 7px 22px #57496b12}
+.hero{background:linear-gradient(135deg,#eee7fb,#edf6fb,#fdf1f4)}h1,h2,h3,p{margin-top:0}.hero h1{font-size:21px;margin-bottom:5px}.muted,.card p{color:var(--muted);font-size:13px;line-height:1.55}
+.row{display:flex;align-items:center;gap:10px}.space{justify-content:space-between}.avatar{width:47px;height:47px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--pink),var(--blue));font-size:23px}
+.name{font-weight:900}.meta{color:var(--muted);font-size:11px}.tags{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0}.tag,.pill{font-size:10px;border-radius:999px;padding:5px 8px;background:#f5f1fa}.pill{color:#6656a3;font-weight:800}.btn{border:0;border-radius:13px;background:var(--lav);color:white;padding:10px 12px;font-weight:900}.btn.alt{background:white;color:var(--lav);border:1px solid var(--lav2)}.btn.soft{background:#f1ecfb;color:#6656a3}.btn.full{width:100%}
+.points{display:flex;justify-content:space-between;align-items:center;background:#fff9e8;border:1px solid #f1e7c7;border-radius:17px;padding:12px 14px;margin-bottom:12px}.points strong{font-size:22px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px}.grid2home{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px}.grid2home button{background:white;border:1px solid var(--line);border-radius:16px;padding:12px 5px;font-weight:800}.grid2home span{display:block;font-size:21px}.grid button{background:white;border:1px solid var(--line);border-radius:16px;padding:12px 5px;font-weight:800}.grid span{display:block;font-size:21px}
+.nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:#fffdf9f2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:7px}.nav button{border:0;background:transparent;color:#99919f;padding:4px}.nav button.active{color:var(--lav);font-weight:900}.nav b{display:block;font-size:18px}.nav small{font-size:9px}
+.section{font-size:15px;font-weight:900;margin:18px 2px 9px}.search{display:flex;gap:7px;margin-bottom:12px}.search input,.field textarea,.field input,.field select{width:100%;border:1px solid var(--line);border-radius:12px;background:white;padding:11px}.search input{flex:1}.message{padding:11px 0;border-bottom:1px solid var(--line)}.message:last-child{border:0}.live{color:#d85f6c;font-weight:900}.notice{font-size:11px;color:var(--muted);background:#f7f3f8;border-radius:12px;padding:9px 10px;line-height:1.5}
+.modalbg{position:fixed;inset:0;background:#312a3c66;z-index:20;display:grid;place-items:end center;padding:15px}.modal{width:min(500px,100%);background:var(--paper);padding:17px;border-radius:22px}.hidden{display:none!important}.field{margin:10px 0}.field label{display:block;font-size:11px;font-weight:800;margin-bottom:5px}
+.stat{font-size:23px;font-weight:900;color:var(--lav)}.bar{height:8px;border-radius:999px;background:#eee8f1;overflow:hidden}.bar div{height:100%;background:var(--lav)}
+
+/* v2: smartphone-app first */
+html,body{min-height:100%;overscroll-behavior:none}
+body{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.app{width:100%;max-width:480px;background:var(--bg);position:relative}
+.top{padding-top:max(15px,env(safe-area-inset-top));min-height:64px}
+.nav{padding-bottom:max(7px,env(safe-area-inset-bottom))}
+.btn,.nav button,.grid button,.role{min-height:44px}
+@media (min-width:700px){
+  body{background:#ebe7ef;display:flex;justify-content:center}
+  .app{box-shadow:0 0 40px #493d5d22}
+}
+.launch{
+  position:fixed;inset:0;z-index:100;background:
+  radial-gradient(circle at 25% 20%,#f8e6ed 0,transparent 32%),
+  radial-gradient(circle at 80% 25%,#e5f2fa 0,transparent 32%),
+  linear-gradient(160deg,#faf7f1,#f5effc);
+  display:flex;align-items:center;justify-content:center;padding:24px
+}
+.launchbox{width:min(430px,100%);text-align:center}
+.birdmark{
+  width:94px;height:94px;border-radius:28px;margin:0 auto 18px;
+  display:grid;place-items:center;font-size:48px;
+  background:white;border:1px solid var(--line);box-shadow:0 14px 40px #6356751f
+}
+.launch h1{font-size:30px;margin:0 0 4px}.launch .lead{color:var(--muted);margin-bottom:28px}
+.authcard{text-align:left;background:#fffdf9;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 14px 40px #63567514}
+.authcard h2{font-size:20px;margin-bottom:6px}.authcard .field input{font-size:16px}
+.rolepick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.rolepick button{border:1px solid var(--line);background:white;border-radius:18px;padding:16px 8px;color:var(--ink);font-weight:900}
+.rolepick button.selected{border-color:var(--lav);background:#f2edfb;color:#6553a0}
+.rolepick span{display:block;font-size:28px;margin-bottom:6px}
+.onboard-dots{display:flex;justify-content:center;gap:7px;margin:14px 0}
+.onboard-dots i{display:block;width:7px;height:7px;border-radius:50%;background:#d8d2db}
+.onboard-dots i.on{width:20px;border-radius:999px;background:var(--lav)}
+.installhint{display:none;margin:9px 0 0;padding:10px;border-radius:12px;background:#f5f1fa;color:var(--muted);font-size:11px;line-height:1.5}
+.appbadge{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:#6e6380;background:white;border:1px solid var(--line);border-radius:999px;padding:5px 8px;margin-top:8px}
+
+
+/* v8: アタメ一覧をスマホで押しやすく */
+.atame-user{
+  width:100%;
+  padding:10px 12px;
+  margin-bottom:8px;
+}
+.atame-user .row.space{
+  width:100%;
+  gap:12px;
+}
+.atame-user .row.space > .row{
+  flex:1;
+  min-width:0;
+}
+.atame-user .avatar{
+  width:46px;
+  height:46px;
+  font-size:22px;
+  flex:0 0 46px;
+}
+.atame-user .btn{
+  min-width:70px;
+  min-height:46px;
+  padding:0 14px;
+  border-radius:14px;
+  font-size:15px;
+  flex:0 0 auto;
+}
+.atame-user .name,
+.atame-user strong{
+  font-size:16px;
+}
+.atame-user .meta{
+  font-size:11px;
+  line-height:1.35;
+}
+.atame-name-line{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-bottom:2px;
+}
+.atame-inline-tags{
+  display:flex;
+  gap:4px;
+  flex-wrap:wrap;
+}
+.atame-inline-tags .tag{
+  padding:3px 6px;
+  font-size:9px;
+}
+#homeAtameList,
+#atameList{
+  width:100%;
+}
+
+
+/* v12: スマホとPCで同じUI */
+.app{
+  width:100%;
+  max-width:480px;
+  margin:0 auto;
+  min-height:100vh;
+  background:var(--bg);
+}
+.nav{
+  width:min(480px,100%);
+}
+@media (min-width:700px){
+  body{
+    background:#ece8f1;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    min-height:100vh;
+  }
+  .app{
+    width:480px;
+    min-height:100vh;
+    margin:0 auto;
+    background:var(--bg);
+    box-shadow:0 0 42px rgba(67,55,86,.16);
+    border-left:1px solid var(--line);
+    border-right:1px solid var(--line);
+  }
+  .top{
+    width:480px;
+    margin:0 auto;
+  }
+  .nav{
+    width:480px;
+  }
+  .launchbox{
+    width:430px;
+  }
+}
+
+
+/* v14 */
+.cotorie-logo{position:relative;display:flex;align-items:center;gap:5px;overflow:visible}
+.brand-text{font-weight:900;letter-spacing:.4px}
+.vine{color:#719064;font-size:15px;line-height:1;opacity:.95}
+.vine-left{transform:rotate(-24deg)}
+.vine-right{transform:scaleX(-1) rotate(-24deg)}
+.brand-bird{position:absolute;right:-18px;top:-7px;font-size:17px;filter:drop-shadow(0 2px 2px #0001)}
+.profile-head{display:flex;gap:12px;align-items:center}
+.profile-avatar{width:64px;height:64px;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-size:30px;background:linear-gradient(135deg,var(--pink),var(--blue));border:2px solid white;box-shadow:0 5px 14px #0001}
+.profile-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.profile-grid select{width:100%}
+.icon-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:8px}
+.icon-choice{border:1px solid var(--line);background:linear-gradient(180deg,#fff,#faf7fd);border-radius:16px;min-height:54px;font-size:25px;box-shadow:0 4px 12px #57496b0d}
+.icon-choice.active{border:2px solid var(--lav);background:#f0eafb;transform:translateY(-1px)}
+.upload-box{border:1.5px dashed #cfc5dc;border-radius:15px;padding:12px;background:#faf8fc}
+.ledger-item{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.ledger-item:last-child{border-bottom:0}.ledger-title{font-weight:800;font-size:13px}.ledger-sub{font-size:11px;color:var(--muted);margin-top:2px}.ledger-minus{font-weight:900;color:#9e6677;white-space:nowrap}
+.safety-note{font-size:11px;line-height:1.55;color:var(--muted);background:#f6f2f8;border-radius:12px;padding:9px 10px;margin-top:7px}
+
+
+/* v16: scrollable modal + profile time field */
+.modalbg{
+  overflow-y:auto;
+  align-items:flex-start;
+  padding-top:max(16px,env(safe-area-inset-top));
+  padding-bottom:max(16px,env(safe-area-inset-bottom));
+}
+.modal{
+  max-height:calc(100vh - 32px);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+@media (min-width:700px){
+  .modalbg{
+    align-items:center;
+  }
+  .modal{
+    max-height:calc(100vh - 48px);
+  }
+}
+.time-range{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.active-slot{
+  background:#eee8fb!important;
+  color:#6553a0!important;
+  border-color:#cfc1ef!important;
+  font-weight:900;
+}
+#activeSlotPicker .tag{
+  border:1px solid var(--line);
+  cursor:pointer;
+}
+
+/* v18 */
+.discover-head{display:flex;justify-content:space-between;align-items:center;margin:18px 2px 10px}
+.discover-head h2{font-size:16px;margin:0}.filter-link{border:1px solid var(--line);background:white;color:var(--lav);border-radius:999px;padding:7px 10px;font-size:11px;font-weight:900}
+.select-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice-wrap{display:flex;flex-wrap:wrap;gap:6px}.choice-chip{border:1px solid var(--line);background:white;border-radius:999px;padding:7px 9px;font-size:11px;color:var(--muted)}
+.choice-chip.active{background:#efeafb;color:#6553a0;border-color:#cfc1ef;font-weight:900}.history-card{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.history-card:last-child{border-bottom:0}.chat-shell{display:flex;flex-direction:column;gap:10px}.chat-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.chat-log{display:flex;flex-direction:column;gap:8px;max-height:52vh;overflow-y:auto;padding:8px 2px}.bubble{max-width:78%;padding:9px 11px;border-radius:16px;font-size:13px;line-height:1.45}
+.bubble.me{align-self:flex-end;background:#8a78c8;color:white;border-bottom-right-radius:5px}.bubble.them{align-self:flex-start;background:#f2eef5;color:var(--ink);border-bottom-left-radius:5px}
+.chat-compose{display:flex;gap:7px;align-items:flex-end}.chat-compose textarea{flex:1;min-height:46px;max-height:92px}.note-box{background:#fff9e8;border:1px solid #f0e3bc;border-radius:15px;padding:11px;margin-top:8px}
+.note-box textarea{min-height:72px}.section-tabs{display:flex;gap:8px;margin-bottom:10px}.section-tabs button{flex:1;border:1px solid var(--line);background:white;border-radius:13px;padding:9px;font-weight:800;color:var(--muted)}
+.section-tabs button.active{background:#efeafb;color:#6553a0;border-color:#d4c7ef}
+
+/* v21: message list cleanup */
+.msg-list{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 14px;box-shadow:0 6px 20px rgba(78,61,110,.06)}
+.msg-row{display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.msg-row:last-child{border-bottom:none}
+.msg-main{flex:1;min-width:0}
+.msg-name{font-weight:900;font-size:14px;margin-bottom:4px}
+.msg-preview{font-size:14px;line-height:1.45;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg-meta{font-size:10px;color:var(--muted);margin-top:3px}
+.unread-count{min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:var(--lav);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:900}
+
+</style>
+</head>
+<body>
+<div id="launch" class="launch">
+  <div class="launchbox" id="launchBox"></div>
+</div>
+<div class="app">
+<header class="top"><div class="brand cotorie-logo">
+      <span class="vine vine-left">❦</span>
+      <span class="brand-text">Cotorie</span>
+      <span class="vine vine-right">❦</span>
+      <span class="brand-bird">🐦</span>
+    </div><button id="role" class="role" title="試作版：利用者/キャスト切替">利用者モード</button></header>
+<main id="main"></main>
+<nav class="nav">
+<button data-page="home" class="active"><b>⌂</b><small>ホーム</small></button>
+<button data-page="search"><b>⌕</b><small>さがす</small></button>
+<button data-page="messages"><b>✉</b><small>メッセージ</small></button>
+<button data-page="radio"><b>◉</b><small>ラジオ</small></button>
+<button data-page="mypage"><b>☻</b><small>マイページ</small></button>
+</nav></div>
+<div id="modalbg" class="modalbg hidden"><div id="modal" class="modal"></div></div>
+<script>
+
+
+function safeJSON(value, fallback){
+  try{return value ? JSON.parse(value) : fallback;}catch(e){return fallback;}
+}
+const defaultProfiles={
+  user:{
+    name:"ことり",icon:"🐦",image:"",bio:"最近は夜にゆっくり話せる相手を探してます。",
+    hobbies:"ゲーム / 本 / 映画",free:"好きな時間にのんびり話したいです。",
+    alcohol:"飲まない",smoking:"吸わない",gambling:"しない",
+    activeSlots:["夜","深夜","土日"]
+  },
+  cast:{
+    name:"ねむ",icon:"🌙",image:"",bio:"眠れない夜に、のんびり話そ。",
+    hobbies:"ゲーム / 読書 / 夜更かし",free:"雑談も愚痴聞きも歓迎です。",
+    activeSlots:["夜","深夜","土日"]
+  }
+};
+
+const APP={
+  onboarded:localStorage.cotorie_onboarded==="1",
+  displayName:localStorage.cotorie_displayName||"",
+  selectedRole:localStorage.cotorie_selectedRole||"user"
+};
+
+function launchRender(step=APP.onboarded?99:0){
+  const launch=document.querySelector("#launch");
+  const box=document.querySelector("#launchBox");
+  if(step===99){
+    launch.classList.add("hidden");
+    return;
+  }
+  launch.classList.remove("hidden");
+
+  if(step===0){
+    box.innerHTML=`
+      <div class="birdmark">🐦</div>
+      <h1>Cotorie</h1>
+      <div class="lead">ことばが集まる、小さなアトリエ。</div>
+      <div class="authcard">
+        <h2>コトリエへようこそ</h2>
+        <p class="muted">20歳以上限定の、ノンアダルトなコミュニケーションサービス。</p>
+        <button class="btn full" onclick="launchRender(1)">はじめる</button>
+        <button class="btn alt full" style="margin-top:9px" onclick="demoLogin()">ログイン</button>
+        <div class="appbadge">📱 スマホアプリ向け試作版</div>
+      </div>`;
+    return;
+  }
+
+  if(step===1){
+    box.innerHTML=`
+      <div class="birdmark">🪽</div>
+      <div class="onboard-dots"><i class="on"></i><i></i><i></i></div>
+      <div class="authcard">
+        <h2>どちらとして使いますか？</h2>
+        <p class="muted">あとから試作版の切替ボタンでも確認できます。</p>
+        <div class="rolepick">
+          <button id="pickUser" class="selected" onclick="pickRole('user')"><span>💬</span>利用者</button>
+          <button id="pickCast" onclick="pickRole('cast')"><span>🌙</span>キャスト</button>
+        </div>
+        <button class="btn full" onclick="launchRender(2)">次へ</button>
+      </div>`;
+    APP.selectedRole="user";
+    return;
+  }
+
+  if(step===2){
+    box.innerHTML=`
+      <div class="birdmark">✍️</div>
+      <div class="onboard-dots"><i></i><i class="on"></i><i></i></div>
+      <div class="authcard">
+        <h2>プロフィールをつくる</h2>
+        <p class="muted">本番ではここに本人確認や20歳以上確認が入ります。</p>
+        <div class="field"><label>ニックネーム</label><input id="newName" value="${APP.selectedRole==="cast"?"ねむ":"ことり"}" maxlength="20"></div>
+        <div class="field"><label>メールアドレス</label><input type="email" placeholder="example@cotorie.jp"></div>
+        <div class="field"><label>パスワード</label><input type="password" value="demopass"></div>
+        <button class="btn full" onclick="completeSignup()">登録してはじめる</button>
+      </div>`;
+    return;
+  }
+
+  if(step===3){
+    box.innerHTML=`
+      <div class="birdmark">✓</div>
+      <div class="onboard-dots"><i></i><i></i><i class="on"></i></div>
+      <div class="authcard" style="text-align:center">
+        <h2>準備できました</h2>
+        <p class="muted">${APP.selectedRole==="cast"?"キャスト":"利用者"}としてコトリエを体験できます。</p>
+        <button class="btn full" onclick="enterApp()">コトリエを開く</button>
+      </div>`;
+  }
+}
+function pickRole(role){
+  APP.selectedRole=role;
+  document.querySelector("#pickUser")?.classList.toggle("selected",role==="user");
+  document.querySelector("#pickCast")?.classList.toggle("selected",role==="cast");
+}
+function completeSignup(){
+  const name=document.querySelector("#newName")?.value.trim();
+  if(!name){alert("ニックネームを入力してください");return;}
+  APP.displayName=name;
+  localStorage.cotorie_displayName=name;
+  localStorage.cotorie_selectedRole=APP.selectedRole;
+  launchRender(3);
+}
+function enterApp(){
+  APP.onboarded=true;
+  localStorage.cotorie_onboarded="1";
+  S.role=APP.selectedRole;
+  save();
+  document.querySelector("#launch").classList.add("hidden");
+  render();
+  showInstallHint();
+}
+function demoLogin(){
+  APP.onboarded=true;
+  APP.displayName=localStorage.cotorie_displayName||"ことり";
+  APP.selectedRole=localStorage.cotorie_selectedRole||"user";
+  localStorage.cotorie_onboarded="1";
+  S.role=APP.selectedRole;
+  save();
+  document.querySelector("#launch").classList.add("hidden");
+  render();
+  showInstallHint();
+}
+
+function recoverDemo(){
+  const btn=document.querySelector("#recoveryResetBtn");
+  if(btn){
+    btn.disabled=true;
+    btn.textContent="リセット中…";
+  }
+
+  try{
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // After reset, reopen directly as a demo user so the button actually
+    // leads back into the app instead of returning to a broken recovery state.
+    localStorage.setItem("cotorie_onboarded","1");
+    localStorage.setItem("cotorie_selectedRole","user");
+    localStorage.setItem("cotorie_displayName","ことり");
+  }catch(e){
+    console.warn("reset storage:",e);
+  }
+
+  const base=location.pathname.endsWith("/") ? location.pathname : location.pathname;
+  location.href=base + "?fresh=" + Date.now();
+}
+
+function resetDemo(){
+  recoverDemo();
+}
+function showInstallHint(){
+  if(window.matchMedia("(display-mode: standalone)").matches) return;
+  setTimeout(()=>{
+    const el=document.querySelector("#installHint");
+    if(el) el.style.display="block";
+  },400);
+}
+const savedLedger=safeJSON(localStorage.cotorie_pointLedger,null);
+const savedProfiles=safeJSON(localStorage.cotorie_profiles,null);
+const savedAtameSent=safeJSON(localStorage.atameSent,null);
+
+const S={
+  role:localStorage.role||"user",
+  page:"home",
+  points:Number.isFinite(+(localStorage.points)) ? +(localStorage.points) : 1200,
+  earn:Number.isFinite(+(localStorage.earn)) ? +(localStorage.earn) : 860,
+  atameTemplate:Number.isFinite(+(localStorage.atameTemplate)) ? +(localStorage.atameTemplate) : 0,
+  atameSent:(savedAtameSent && typeof savedAtameSent==="object" && !Array.isArray(savedAtameSent)) ? savedAtameSent : {},
+  available:localStorage.cotorie_available!=="0",
+  pointLedger:Array.isArray(savedLedger) ? savedLedger : [
+    {title:"みことさんとお話し",pt:40,time:"今日 10:42"},
+    {title:"ラジオ視聴",pt:2,time:"今日 09:18"},
+    {title:"ねむさんとお話し",pt:40,time:"昨日 23:31"}
+  ],
+  profiles:(savedProfiles && typeof savedProfiles==="object" && !Array.isArray(savedProfiles)) ? savedProfiles : JSON.parse(JSON.stringify(defaultProfiles))
+};
+S.profiles.user={...defaultProfiles.user,...((S.profiles.user && typeof S.profiles.user==="object") ? S.profiles.user : {})};
+S.profiles.cast={...defaultProfiles.cast,...((S.profiles.cast && typeof S.profiles.cast==="object") ? S.profiles.cast : {})};
+let atameTemplates = safeJSON(localStorage.atameTemplates,null);
+if(!Array.isArray(atameTemplates) || !atameTemplates.length) atameTemplates = [
+  {name:"趣味が近い人へ", body:"こんばんは！プロフィールを見て、趣味が近そうだなと思ってメッセージしました。よかったら少しお話ししませんか？"},
+  {name:"ゲーム好きさんへ", body:"こんばんは！ゲーム好きなんですね🎮 私もよく遊ぶので、最近やってるゲームの話とかできたら嬉しいです！"},
+  {name:"夜更かしさんへ", body:"こんばんは🌙 まだ起きてますか？私も夜型なので、よかったらのんびりお話ししませんか？"}
+];
+
+// v7 demo migration: previous tests may have marked every sample user as "sent".
+if(localStorage.cotorie_demo_version!=="7"){
+  S.atameSent={};
+  localStorage.atameSent="{}";
+  localStorage.cotorie_demo_version="7";
+}
+
+const casts=[
+{name:"ねむ",age:25,area:"東京",a:"🌙",status:"お話できます",online:true,tags:["ゲーム","読書","夜更かし"],bio:"眠れない夜に、のんびり話そ。"},
+{name:"みこと",age:28,area:"神奈川",a:"🫖",status:"ラジオ中",online:true,tags:["紅茶","映画","旅行"],bio:"聞くのが好きです。愚痴も歓迎◎"},
+{name:"ひより",age:24,area:"埼玉",a:"🐤",status:"今夜ログイン",online:false,tags:["アニメ","料理","猫"],bio:"最近は作り置きにハマってます。"},
+{name:"すい",age:30,area:"千葉",a:"📚",status:"お話できます",online:true,tags:["本","カフェ","散歩"],bio:"静かな雑談と読書の話が好き。"},
+{name:"あお",age:27,area:"大阪",a:"🎧",status:"お話できます",online:true,tags:["音楽","ゲーム","映画"],bio:"音楽聴きながら夜更かししがち。"},
+{name:"ゆら",age:29,area:"北海道",a:"🌿",status:"お話できます",online:true,tags:["旅行","植物","カフェ"],bio:"のんびり雑談が好きです。"},
+{name:"ことね",age:26,area:"福岡",a:"🧸",status:"お話できます",online:true,tags:["美容","料理","アニメ"],bio:"まったりお話しよ〜。"}
+];
+const ATAME_PEOPLE=[
+  {a:"🎧",name:"ゆう",age:29,area:"東京",lastMin:5,tags:["音楽","ゲーム","晩酌"],online:true,newUser:true},
+  {a:"🦊",name:"さく",age:27,area:"東京",lastMin:18,tags:["アニメ","旅行","猫"],online:true,newUser:false},
+  {a:"🌿",name:"れん",age:34,area:"千葉",lastMin:64,tags:["植物","読書"],online:false,newUser:false},
+  {a:"☕",name:"りく",age:31,area:"神奈川",lastMin:12,tags:["カフェ","映画"],online:true,newUser:true},
+  {a:"🎮",name:"ハル",age:26,area:"埼玉",lastMin:33,tags:["ゲーム","アニメ"],online:false,newUser:false},
+  {a:"📚",name:"ナオ",age:32,area:"東京",lastMin:8,tags:["読書","映画","カフェ"],online:true,newUser:false}
+];
+
+function save(){
+  localStorage.role=S.role;
+  localStorage.points=S.points;
+  localStorage.earn=S.earn;
+  localStorage.atameTemplate=S.atameTemplate;
+  localStorage.atameSent=JSON.stringify(S.atameSent);
+  localStorage.atameTemplates=JSON.stringify(atameTemplates);
+  localStorage.cotorie_available=S.available?"1":"0";
+  localStorage.cotorie_pointLedger=JSON.stringify(S.pointLedger);
+  localStorage.cotorie_profiles=JSON.stringify(S.profiles);
+  localStorage.cotorie_spokenWith=JSON.stringify(S.spokenWith);
+  localStorage.cotorie_castNotes=JSON.stringify(S.castNotes);
+}
+function card(c,i){return `<div class="card"><div class="row space"><div class="row"><div class="avatar">${c.a}</div><div><div class="name">${c.name} <span class="pill">本人確認済</span></div><div class="meta">${c.age}歳・${c.area}</div></div></div><span class="pill">${c.status}</span></div><div class="tags">${c.tags.map(x=>`<span class="tag">${x}</span>`).join("")}</div><p>${c.bio}</p><div class="row"><button class="btn" onclick="openChat(${i},&quot;user&quot;)">はなしかける</button><button class="btn alt" onclick="profile(${i})">プロフィール</button></div></div>`}
+
+function getProfile(role){return S.profiles[role||S.role] || defaultProfiles.user}
+function profileAvatar(role){
+  const p=getProfile(role);
+  if(p.image) return `<img src="${p.image}" alt="プロフィール画像">`;
+  return esc(p.icon||"🐦");
+}
+function addLedger(title,pt){
+  S.pointLedger.unshift({title,pt,time:"たった今"});
+  S.pointLedger=S.pointLedger.slice(0,20);
+}
+function openProfileEditor(role){
+  const p=getProfile(role);
+  const icons=["🐦","🌙","🫖","📚","☕","🌸","🎀","🪽","🕊️","⭐","🐈","🌿","🎧","🧸","🍀"];
+  show(`
+    <h3>${role==="cast"?"キャスト":"利用者"}プロフィール編集</h3>
+    <div class="profile-head"><div class="profile-avatar" id="profilePreview">${profileAvatar(role)}</div><div><strong>${esc(p.name||"")}</strong><div class="meta">公開プロフィール</div></div></div>
+    <div class="field"><label>ニックネーム</label><input id="pfName" value="${esc(p.name||"")}" maxlength="20"></div>
+    <div class="field"><label>ひとこと</label><textarea id="pfBio">${esc(p.bio||"")}</textarea></div>
+    <div class="field"><label>興味がある分野・趣味</label><input id="pfHobbies" value="${esc(p.hobbies||"")}" placeholder="ゲーム / 読書 / 映画"></div>
+    <div class="field">
+      <label>基本の時間帯</label>
+      <div class="tags" id="activeSlotPicker">
+        ${["早朝","朝","昼","夕方","夜","深夜","平日","土日"].map(slot=>`<button type="button" class="tag ${Array.isArray(p.activeSlots)&&p.activeSlots.includes(slot)?"active-slot":""}" onclick="toggleActiveSlot(this,'${slot}')">${slot}</button>`).join("")}
+      </div>
+      <div class="meta" style="margin-top:5px">複数選択できます</div>
+    </div>
+    ${role==="user"?`<div class="profile-grid">
+      <div class="field"><label>お酒</label><select id="pfAlcohol"><option>飲まない</option><option>たまに飲む</option><option>飲む</option></select></div>
+      <div class="field"><label>タバコ</label><select id="pfSmoking"><option>吸わない</option><option>たまに吸う</option><option>吸う</option></select></div>
+      <div class="field"><label>ギャンブル</label><select id="pfGambling"><option>しない</option><option>たまにする</option><option>する</option></select></div>
+    </div>`:""}
+    <div class="field"><label>自由記入</label><textarea id="pfFree">${esc(p.free||"")}</textarea></div>
+    <div class="field"><label>コトリエの基本アイコン</label><div class="icon-picker">${icons.map(icon=>`<button type="button" class="icon-choice ${!p.image&&p.icon===icon?"active":""}" onclick="chooseProfileIcon('${role}','${icon}',this)">${icon}</button>`).join("")}</div></div>
+    <div class="field upload-box"><label>自分の画像から選ぶ</label><input id="pfImage" type="file" accept="image/jpeg,image/png,image/webp"><div class="safety-note">アダルト・過度な露出・性的な画像は公開不可。本番ではアップロード後に画像審査を通してから公開する設計にします。</div></div>
+    <div class="row"><button class="btn" onclick="saveProfile('${role}')">保存</button><button class="btn alt" onclick="closeM()">閉じる</button></div>
+  `);
+  if(role==="user"){
+    document.querySelector('#pfAlcohol').value=p.alcohol||"飲まない";
+    document.querySelector('#pfSmoking').value=p.smoking||"吸わない";
+    document.querySelector('#pfGambling').value=p.gambling||"しない";
+  }
+  const input=document.querySelector('#pfImage');
+  if(input) input.onchange=e=>{
+    const file=e.target.files?.[0]; if(!file) return;
+    if(file.size>5*1024*1024){alert('画像は5MB以下にしてください');input.value='';return;}
+    const reader=new FileReader();
+    reader.onload=()=>{p.image=reader.result;p.icon=p.icon||"🐦";document.querySelector('#profilePreview').innerHTML=`<img src="${reader.result}" alt="プロフィール画像">`;document.querySelectorAll('.icon-choice').forEach(x=>x.classList.remove('active'));};
+    reader.readAsDataURL(file);
+  };
+}
+function chooseProfileIcon(role,icon,el){
+  const p=getProfile(role);p.icon=icon;p.image="";
+  document.querySelector('#profilePreview').textContent=icon;
+  document.querySelectorAll('.icon-choice').forEach(x=>x.classList.remove('active'));el.classList.add('active');
+}
+
+function toggleActiveSlot(el,slot){
+  el.classList.toggle("active-slot");
+}
+function saveProfile(role){
+  const p=getProfile(role);
+  p.name=document.querySelector('#pfName')?.value.trim()||p.name;
+  p.bio=document.querySelector('#pfBio')?.value.trim()||"";
+  p.hobbies=document.querySelector('#pfHobbies')?.value.trim()||"";
+  p.activeSlots=[...document.querySelectorAll('#activeSlotPicker .active-slot')].map(el=>el.textContent.trim());
+  p.free=document.querySelector('#pfFree')?.value.trim()||"";
+  if(role==="user"){
+    p.alcohol=document.querySelector('#pfAlcohol')?.value||"飲まない";
+    p.smoking=document.querySelector('#pfSmoking')?.value||"吸わない";
+    p.gambling=document.querySelector('#pfGambling')?.value||"しない";
+  }
+  save();closeM();render();
+}
+
+const PREFECTURES=["北海道","青森","岩手","宮城","秋田","山形","福島","茨城","栃木","群馬","埼玉","千葉","東京","神奈川","新潟","富山","石川","福井","山梨","長野","岐阜","静岡","愛知","三重","滋賀","京都","大阪","兵庫","奈良","和歌山","鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知","福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"];
+const HOBBY_CHOICES=["ゲーム","読書","映画","アニメ","料理","猫","旅行","音楽","カフェ","美容","植物","散歩","紅茶","晩酌"];
+function randomOnlineCasts(){return casts.filter(c=>c.online).sort(()=>Math.random()-.5).slice(0,5)}
+function spokenCasts(){return casts.filter((c,i)=>S.spokenWith.includes(i+1))}
+function liveKnownCasts(){return casts.filter((c,i)=>S.spokenWith.includes(i+1)&&c.status==="ラジオ中")}
+function markSpoken(i){const id=i+1;if(!S.spokenWith.includes(id))S.spokenWith.push(id);save()}
+function saveCastMemo(name){S.castNotes[name]=document.querySelector("#castMemo")?.value||"";save();alert("メモを保存しました")}
+function openChat(i,role=S.role){
+ const c=casts[i];markSpoken(i);
+ show(`<div class="chat-shell"><div class="chat-top"><div class="row"><div class="avatar">${c.a}</div><div><strong>${c.name}</strong><div class="meta">${c.online?"● オンライン":"オフライン"}</div></div></div><button class="btn alt" onclick="closeM()">閉じる</button></div>
+ <div class="chat-log"><div class="bubble them">こんにちは〜！今日はどんな感じだった？</div><div class="bubble me">ちょっとだけ話したくて来ました。</div><div class="bubble them">うれしい！のんびり話そ〜。</div></div>
+ <div class="chat-compose"><textarea placeholder="メッセージを入力（試作）"></textarea><button class="btn" onclick="alert('会話機能はまだ試作です')">送信</button></div>
+ ${role==="cast"?`<div class="note-box"><strong>この人についてのメモ</strong><div class="meta">キャスト本人だけに表示</div><textarea id="castMemo">${esc(S.castNotes[c.name]||"")}</textarea><button class="btn alt" style="margin-top:8px" onclick="saveCastMemo('${c.name}')">メモ保存</button></div>`:""}</div>`)
+}
+function openUserFilter(){
+ show(`<h3>さらに絞り込む</h3><div class="field"><label>都道府県</label><select id="filterPref"><option value="">指定なし</option>${PREFECTURES.map(p=>`<option>${p}</option>`).join("")}</select></div>
+ <div class="field"><label>趣味・興味（複数選択）</label><div class="choice-wrap">${HOBBY_CHOICES.map(h=>`<button type="button" class="choice-chip" onclick="this.classList.toggle('active')">${h}</button>`).join("")}</div></div>
+ <div class="field"><label>状態</label><select id="filterStatus"><option value="">すべて</option><option value="online">オンラインのみ</option><option value="radio">ラジオ中</option></select></div>
+ <button class="btn full" onclick="applySearchFilter()">この条件で検索</button>`)
+}
+function applySearchFilter(){
+  const pref=document.querySelector("#filterPref")?.value||"";
+  const status=document.querySelector("#filterStatus")?.value||"";
+  const hobbies=[...document.querySelectorAll(".choice-chip.active")].map(x=>x.textContent.trim());
+
+  closeM();
+  go("search");
+
+  setTimeout(()=>{
+    const rs=casts.filter(c=>{
+      if(pref && c.area!==pref) return false;
+      if(status==="online" && !c.online) return false;
+      if(status==="radio" && c.status!=="ラジオ中") return false;
+      if(hobbies.length && !hobbies.some(h=>c.tags.includes(h))) return false;
+      return true;
+    });
+
+    const host=document.querySelector("#searchResults");
+    if(host){
+      host.innerHTML=rs.length
+        ? rs.map(c=>card(c,casts.indexOf(c))).join("")
+        : `<div class="notice">条件に合う相手が見つかりませんでした。</div>`;
+    }
+  },50);
+}
+function showMessageTab(tab){document.querySelector("#talkList")?.classList.toggle("hidden",tab!=="talk");document.querySelector("#historyList")?.classList.toggle("hidden",tab!=="history");document.querySelector("#talkTab")?.classList.toggle("active",tab==="talk");document.querySelector("#historyTab")?.classList.toggle("active",tab==="history")}
+function userHome(){const onlineList=randomOnlineCasts();const liveKnown=liveKnownCasts();return `
+<section class="hero"><h1>こんにちは、${esc(getProfile("user").name||"ことり")}さん 🐦</h1><p>話したい気分に合う相手を、ゆっくり探してみよう。</p></section>
+<div class="points"><div><div class="label">保有ポイント</div><strong>${S.points}pt</strong></div><button class="btn secondary" data-action="charge">ポイント追加</button></div>
+<div class="discover-head"><h2>おはなしできます</h2><button class="filter-link" onclick="openUserFilter()">さらに絞り込む</button></div>${onlineList.map(c=>card(c,casts.indexOf(c))).join("")}
+<div class="section-title"><h2>ただいま配信中</h2></div>${liveKnown.length?liveKnown.map(c=>`<div class="card radio-card"><div class="row space"><div class="row"><div class="avatar">${c.a}</div><div><strong>${c.name}のラジオ</strong><div class="meta">以前おはなししたことがあります</div></div></div><span class="pill pink">LIVE</span></div><button class="btn full" style="margin-top:10px" data-action="listen">聴いてみる</button></div>`).join(""):`<div class="notice">いま、以前おはなししたことのある相手の配信はありません。</div>`}` }
+function userSearch(){return `
+<div class="section-title"><h2>お話し相手を探す</h2><button class="filter-link" onclick="openUserFilter()">条件を選ぶ</button></div>
+<div class="searchbar"><input id="searchInput" placeholder="名前・趣味・キーワード"><button class="btn" data-action="doSearch">検索</button></div>
+<div class="card"><div class="select-grid"><div class="field"><label>都道府県</label><select id="quickPref" onchange="quickSearch()"><option value="">指定なし</option>${PREFECTURES.map(p=>`<option>${p}</option>`).join("")}</select></div><div class="field"><label>状態</label><select id="quickStatus" onchange="quickSearch()"><option value="">すべて</option><option value="online">オンライン</option><option value="radio">ラジオ中</option></select></div></div>
+<div class="field"><label>趣味（複数選択）</label><div class="choice-wrap">${HOBBY_CHOICES.map(h=>`<button type="button" class="choice-chip" onclick="this.classList.toggle('active');quickSearch()">${h}</button>`).join("")}</div></div></div><div id="searchResults">${casts.map(c=>card(c,casts.indexOf(c))).join("")}</div>`}
+function userMessages(){
+  const known=spokenCasts();
+  return `
+    <div class="section-title"><h2>メッセージ</h2></div>
+
+    <div class="section-tabs">
+      <button id="talkTab" class="active" onclick="showMessageTab('talk')">トーク</button>
+      <button id="historyTab" onclick="showMessageTab('history')">履歴</button>
+    </div>
+
+    <div id="talkList" class="msg-list">
+      ${[
+        {castIndex:1,avatar:"🫖",name:"みこと",text:"昨日の映画の話、続き聞きたい〜！",time:"10:42",unread:2},
+        {castIndex:0,avatar:"🌙",name:"ねむ",text:"今日は夜に少しラジオするよ",time:"09:18",unread:1},
+        {castIndex:2,avatar:"🐤",name:"ひより",text:"猫ちゃんかわいかった🐾",time:"昨日",unread:0}
+      ].map(m=>`
+        <div class="msg-row" onclick="openChat(${m.castIndex},'user')">
+          <div class="avatar">${m.avatar}</div>
+          <div class="msg-main">
+            <div class="msg-name">${m.name}</div>
+            <div class="msg-preview">${m.text}</div>
+            <div class="msg-meta">${m.time}</div>
+          </div>
+          ${m.unread?`<span class="unread-count">${m.unread}</span>`:""}
+        </div>`).join("")}
+    </div>
+
+    <div id="historyList" class="msg-list hidden">
+      ${known.length ? known.map(c=>`
+        <div class="msg-row" onclick="openChat(${casts.indexOf(c)},'user')">
+          <div class="avatar">${c.a}</div>
+          <div class="msg-main">
+            <div class="msg-name">${c.name}</div>
+            <div class="msg-preview">おはなししたことがある相手</div>
+            <div class="msg-meta">${c.tags.join("・")}</div>
+          </div>
+        </div>`).join("") : `<div class="notice" style="margin:12px 0">まだおはなしした履歴がありません。</div>`}
+    </div>
+  `;
+}
+function castHomeAtameList(){
+  const current=atameTemplates[S.atameTemplate] || atameTemplates[0];
+  const list=ATAME_PEOPLE
+    .filter(p=>!S.atameSent[p.name])
+    .sort((a,b)=>(b.online-a.online)||(a.lastMin-b.lastMin))
+    .slice(0,4);
+
+  return `
+    <div class="card">
+      <div class="row space">
+        <div style="flex:1">
+          <div class="meta">テンプレート</div>
+          <strong>${esc(current.name)}</strong>
+          <div class="meta" style="margin-top:4px">${esc(current.body).slice(0,42)}${current.body.length>42?"…":""}</div>
+        </div>
+        <button class="btn alt" onclick="templateManager()">変更</button>
+      </div>
+    </div>
+
+    <div class="section" style="display:flex;justify-content:space-between;align-items:center">
+      <span>すぐ送れる人</span>
+      <button class="btn alt" style="min-height:36px;padding:7px 10px" onclick="go('search')">絞り込み</button>
+    </div>
+
+    <div id="homeAtameList">
+      ${list.length ? list.map(p=>`
+        <div class="card atame-user" data-atame-user="${esc(p.name)}">
+          <div class="row space">
+            <div class="row">
+              <div class="avatar">${p.a}</div>
+              <div>
+                <div class="atame-name-line">
+                  <strong>${esc(p.name)}</strong>
+                  <div class="atame-inline-tags">${p.tags.slice(0,3).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+                </div>
+                <div class="meta">最終ログイン ${formatLast(p.lastMin)}</div>
+                <div class="meta">${p.online ? "● オンライン" : "オフライン"}${p.newUser ? " ・ NEW" : ""}</div>
+              </div>
+            </div>
+            <button class="btn" onclick="sendAtame('${esc(p.name)}')">送信</button>
+          </div>
+        </div>
+      `).join("") : `
+        <div class="card" style="text-align:center">
+          <div style="font-size:30px">🪽</div>
+          <strong>今すぐ送れる人はいません</strong>
+          <p>全員に送信済み、または条件に合うユーザーがいない状態です。</p>
+        </div>`}
+    </div>
+  `;
+}
+function castHome(){return `
+  <div class="card">
+    <div class="meta">今月の報酬</div>
+    <div class="stat">${S.earn}円</div>
+    <p>あと${Math.max(0,1200-S.earn)}円で換金できます</p>
+    <div class="bar"><div style="width:${Math.min(100,S.earn/12)}%"></div></div>
+  </div>
+
+  <div class="grid2home">
+    <button onclick="go('radio')"><span>🎙️</span>配信する</button>
+    <button onclick="go('messages')"><span>✉️</span>返信する</button>
+  </div>
+
+  <div class="card">
+    <div class="row space">
+      <div>
+        <strong>今お話できます</strong>
+        <p>${S.available ? "プロフィールに「お話できます」と表示中" : "現在は非表示です"}</p>
+      </div>
+      <button class="btn ${S.available ? "soft" : "alt"}" onclick="toggleAvailable()">${S.available ? "ON" : "OFF"}</button>
+    </div>
+  </div>
+
+  ${castHomeAtameList()}
+` }
+function castSearch(){
+  const people=ATAME_PEOPLE;
+  const current=atameTemplates[S.atameTemplate] || atameTemplates[0];
+  const remaining=people.filter(p=>!S.atameSent[p.name]).length;
+
+  return `
+    <div class="section">アタメを送る <span class="meta">残り ${remaining} 人</span></div>
+
+    <div class="card">
+      <div class="row space">
+        <div style="flex:1">
+          <div class="meta">今使うテンプレート</div>
+          <strong>${esc(current.name)}</strong>
+          <div class="meta" style="margin-top:5px">${esc(current.body).slice(0,58)}${current.body.length>58?"…":""}</div>
+        </div>
+        <button class="btn alt" onclick="templateManager()">テンプレート</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field" style="margin-top:0">
+        <label>絞り込み</label>
+        <div class="row" style="flex-wrap:wrap">
+          <select id="atameStatus" onchange="applyAtameFilters()">
+            <option value="all">すべて</option>
+            <option value="online">オンライン</option>
+            <option value="new">新規ユーザー</option>
+          </select>
+          <select id="atameArea" onchange="applyAtameFilters()">
+            <option value="all">地域：すべて</option>
+            <option>東京</option>
+            <option>神奈川</option>
+            <option>千葉</option>
+            <option>埼玉</option>
+          </select>
+          <select id="atameTag" onchange="applyAtameFilters()">
+            <option value="all">趣味：すべて</option>
+            <option>ゲーム</option>
+            <option>アニメ</option>
+            <option>読書</option>
+            <option>映画</option>
+            <option>カフェ</option>
+            <option>旅行</option>
+            <option>猫</option>
+          </select>
+          <select id="atameSort" onchange="applyAtameFilters()">
+            <option value="login">最終ログイン順</option>
+            <option value="online">オンライン優先</option>
+            <option value="ageAsc">年齢が若い順</option>
+            <option value="ageDesc">年齢が高い順</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice" style="margin-bottom:12px">
+      「アタメ送信」を押すと即送信され、そのユーザーは一覧から消えます。次のユーザーが同じ位置に詰まるので、同じ場所をぽちぽち押して連続送信できます。
+    </div>
+
+    <div id="atameList"></div>
+
+    <div id="atameDone" class="card hidden" style="text-align:center">
+      <div style="font-size:34px">🪽</div>
+      <h3>表示できるユーザーがいません</h3>
+      <p>条件を変えるか、新しいユーザーを待ってね。</p>
+    </div>
+`;
+}
+function castMessages(){
+  const rows=[
+    {castIndex:0,avatar:"🎧",name:"ゆう",text:"昨日ラジオ楽しかった！",time:"たった今",unread:2},
+    {castIndex:1,avatar:"🦊",name:"さく",text:"おすすめしてた本、買ったよ",time:"18分前",unread:1},
+    {castIndex:2,avatar:"☕",name:"りく",text:"今夜も話せる？",time:"1時間前",unread:0}
+  ];
+  return `
+    <div class="section-title"><h2>メッセージ</h2><small>返信で12円</small></div>
+    <div class="msg-list">
+      ${rows.map(m=>`
+        <div class="msg-row" onclick="openChat(${m.castIndex},'cast')">
+          <div class="avatar">${m.avatar}</div>
+          <div class="msg-main">
+            <div class="msg-name">${m.name}</div>
+            <div class="msg-preview">${m.text}</div>
+            <div class="msg-meta">${m.time}</div>
+          </div>
+          ${m.unread?`<span class="unread-count">${m.unread}</span>`:""}
+        </div>`).join("")}
+    </div>
+  `;
+}
+function go(p){S.page=p;render()}document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelector("#role").onclick=()=>{S.role=S.role==="user"?"cast":"user";S.page="home";save();render()}
+function show(h){document.querySelector("#modal").innerHTML=h;document.querySelector("#modalbg").classList.remove("hidden")}function closeM(){document.querySelector("#modalbg").classList.add("hidden")}document.querySelector("#modalbg").onclick=e=>{if(e.target.id==="modalbg")closeM()}
+function mail(i){show(`<h3>${casts[i].a} ${casts[i].name}さんにメール</h3><p class="muted">送信すると40pt消費します。</p><div class="field"><textarea id="msg" placeholder="メッセージ"></textarea></div><div class="row"><button class="btn" onclick="sendMail()">40ptで送る</button><button class="btn alt" onclick="closeM()">やめる</button></div>`)}
+function sendMail(){if(S.points<40)return alert("ポイントが足りません");S.points-=40;addLedger("お話ししました",40);save();closeM();render();alert("送信しました（試作）")}
+function profile(i){const c=casts[i];show(`<div class="row"><div class="avatar">${c.a}</div><div><h3 style="margin:0">${c.name}</h3><div class="meta">${c.age}歳・${c.area}</div></div></div><div class="tags">${c.tags.map(x=>`<span class="tag">${x}</span>`).join("")}</div><p>${c.bio}</p><button class="btn full" onclick="openChat(${i},&quot;user&quot;)">はなしかける</button>`)}
+function charge(){show(`<h3>ポイント追加</h3><p class="muted">試作なので実際の決済はありません。</p><div class="grid"><button onclick="add(500)">500pt</button><button onclick="add(1000)">1000pt</button><button onclick="add(3000)">3000pt</button></div>`)}function add(n){S.points+=n;save();closeM();render()}
+function listen(){show(`<h3>🎙️ 無料3分を再生中…</h3><p class="muted">3分を超えると2pt/分。</p><button class="btn full" onclick="radioMinute()">2ptで1分続ける</button>`)}function radioMinute(){if(S.points<2)return alert("ポイント不足");S.points-=2;addLedger("ラジオ視聴",2);save();closeM();render()}
+
+function getAtamePeople(){
+  return ATAME_PEOPLE.map(p=>({...p,tags:[...p.tags]}));
+}
+function formatLast(min){
+  if(min<60) return `${min}分前`;
+  const h=Math.floor(min/60);
+  return `${h}時間前`;
+}
+function applyAtameFilters(){
+  const host=document.querySelector("#atameList");
+  if(!host) return;
+
+  const people=getAtamePeople();
+  const status=document.querySelector("#atameStatus")?.value || "all";
+  const area=document.querySelector("#atameArea")?.value || "all";
+  const tag=document.querySelector("#atameTag")?.value || "all";
+  const sort=document.querySelector("#atameSort")?.value || "login";
+
+  let list=people.filter(p=>!S.atameSent[p.name]);
+
+  if(status==="online") list=list.filter(p=>p.online);
+  if(status==="new") list=list.filter(p=>p.newUser);
+  if(area!=="all") list=list.filter(p=>p.area===area);
+  if(tag!=="all") list=list.filter(p=>p.tags.includes(tag));
+
+  if(sort==="login") list.sort((a,b)=>a.lastMin-b.lastMin);
+  if(sort==="online") list.sort((a,b)=>(b.online-a.online)||(a.lastMin-b.lastMin));
+  if(sort==="ageAsc") list.sort((a,b)=>a.age-b.age);
+  if(sort==="ageDesc") list.sort((a,b)=>b.age-a.age);
+
+  host.innerHTML=list.map(p=>`
+    <div class="card atame-user" data-atame-user="${esc(p.name)}">
+      <div class="row space">
+        <div class="row">
+          <div class="avatar">${p.a}</div>
+          <div>
+            <div class="atame-name-line">
+              <strong>${esc(p.name)}</strong>
+              <div class="atame-inline-tags">${p.tags.slice(0,3).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+            </div>
+            <div class="meta">最終ログイン ${formatLast(p.lastMin)}</div>
+            <div class="meta">${p.online ? "● オンライン" : "オフライン"}${p.newUser ? " ・ NEW" : ""}</div>
+          </div>
+        </div>
+        <button class="btn" onclick="sendAtame('${esc(p.name)}')">アタメ送信</button>
+      </div>
+    </div>
+  `).join("");
+
+  const done=document.querySelector("#atameDone");
+  if(done) done.classList.toggle("hidden", list.length>0);
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function sendAtame(name){
+  const t=atameTemplates[S.atameTemplate] || atameTemplates[0];
+  S.atameSent[name]=true;
+  save();
+
+  const row=[...document.querySelectorAll(".atame-user")]
+    .find(el=>el.dataset.atameUser===name);
+
+  if(row){
+    row.style.transition="opacity .16s ease, transform .16s ease";
+    row.style.opacity="0";
+    row.style.transform="translateY(-4px)";
+    setTimeout(()=>{
+      if(document.querySelector("#atameList")){
+        applyAtameFilters();
+      }else{
+        render();
+      }
+    },160);
+  } else {
+    if(document.querySelector("#atameList")) applyAtameFilters();
+    else render();
+  }
+
+  // 連打を止めない小さな通知だけ表示
+  let toast=document.querySelector("#atameToast");
+  if(!toast){
+    toast=document.createElement("div");
+    toast.id="atameToast";
+    toast.style.cssText="position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:99;background:#4d435b;color:white;padding:9px 13px;border-radius:999px;font-size:12px;font-weight:800;box-shadow:0 8px 22px #0002;pointer-events:none";
+    document.body.appendChild(toast);
+  }
+  toast.textContent=`${name}さんへ「${t.name}」を送信しました`;
+  toast.style.opacity="1";
+  clearTimeout(window._atameToastTimer);
+  window._atameToastTimer=setTimeout(()=>toast.style.opacity="0",900);
+}
+function templateManager(){
+  const options=atameTemplates.map((t,i)=>`<option value="${i}" ${i===S.atameTemplate?"selected":""}>${esc(t.name)}</option>`).join("");
+  show(`<h3>アタックメール用テンプレート</h3>
+    <p class="muted">ここで選んだアタックメール用テンプレートが、ワンクリック送信に使われます。</p>
+    <div class="field"><label>使用するテンプレート</label><select id="tplSelect">${options}</select></div>
+    <div id="tplPreview" class="notice">${esc((atameTemplates[S.atameTemplate]||atameTemplates[0]).body)}</div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" onclick="selectTemplate()">これを使う</button>
+      <button class="btn alt" onclick="newTemplate()">＋新規作成</button>
+    </div>`);
+  document.querySelector("#tplSelect").onchange=e=>{
+    const t=atameTemplates[+e.target.value];
+    document.querySelector("#tplPreview").textContent=t.body;
+  };
+}
+function selectTemplate(){
+  S.atameTemplate=+document.querySelector("#tplSelect").value;
+  save(); closeM(); render();
+}
+function newTemplate(){
+  show(`<h3>アタックメール用テンプレートを作成</h3>
+    <div class="field"><label>テンプレート名</label><input id="tplName" placeholder="例：読書好きさんへ / 夜更かしさんへ"></div>
+    <div class="field"><label>本文</label><textarea id="tplBody" placeholder="アタックメール本文を入力"></textarea></div>
+    <div class="row"><button class="btn" onclick="saveTemplate()">保存して使う</button><button class="btn alt" onclick="templateManager()">戻る</button></div>`);
+}
+function saveTemplate(){
+  const name=document.querySelector("#tplName").value.trim();
+  const body=document.querySelector("#tplBody").value.trim();
+  if(!name||!body)return alert("テンプレート名と本文を入力してください");
+  atameTemplates.push({name,body});
+  S.atameTemplate=atameTemplates.length-1;
+  save(); closeM(); render();
+}
+function reply(){S.earn+=12;save();render();alert("返信しました。報酬+12円（試作）")}
+function search(){const q=(document.querySelector("#q").value||"").toLowerCase();const rs=casts.filter(c=>[c.name,c.area,c.bio,...c.tags].join(" ").toLowerCase().includes(q));document.querySelector("#results").innerHTML=(rs.length?rs:casts).map(c=>card(c,casts.indexOf(c))).join("")}
+function simple(t,d){show(`<h3>${t}</h3><p class="muted">${d}</p><button class="btn full" onclick="closeM()">OK</button>`)}
+try{
+  render();
+  launchRender(APP.onboarded?99:0);
+  if(APP.onboarded) showInstallHint();
+}catch(err){
+  console.error("Cotorie boot error:",err);
+  // Broken old demo data should never leave a blank screen.
+  localStorage.removeItem("cotorie_profiles");
+  localStorage.removeItem("cotorie_pointLedger");
+  localStorage.removeItem("atameSent");
+  const main=document.querySelector("#main");
+  if(main){
+    main.innerHTML=`<div class="hero"><h1>コトリエ 🐦</h1><p class="muted">保存データの読み込みに失敗したため、表示を復旧しました。</p></div><div class="card"><button id="recoveryResetBtn" type="button" class="btn full" onclick="recoverDemo();return false;">デモデータをリセットして開く</button><a href="./?fresh=1" class="btn alt full" style="margin-top:8px;text-align:center;text-decoration:none">それでも開かない場合はこちら</a></div>`;
+  }
+  document.querySelector("#launch")?.classList.add("hidden");
+}
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./sw.js?v=23").catch(()=>{});
+  });
+}
+
+</script>
+</body></html>
