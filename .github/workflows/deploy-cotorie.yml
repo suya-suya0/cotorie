@@ -2,14 +2,8 @@ name: Deploy latest Cotorie
 
 on:
   push:
-    branches: ["main"]
-    paths:
-      - "index_v*.html"
-      - "manifest.webmanifest"
-      - "sw.js"
-      - "icon-192.png"
-      - "icon-512.png"
-      - ".github/workflows/deploy-cotorie.yml"
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -18,43 +12,54 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
 
 jobs:
   deploy:
+    runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare site
+      - name: Find latest Cotorie
         shell: bash
         run: |
-          set -e
-          mkdir -p public
+          mkdir -p _site
 
-          latest=$(find . -maxdepth 1 -type f -name 'index_v*.html' -printf '%f\n' | sort -V | tail -n 1)
+          latest=$(find . -maxdepth 1 -type f -name 'index_v*.html' \
+            | sed 's#^\./##' \
+            | sort -V \
+            | tail -n 1)
 
           if [ -z "$latest" ]; then
-            echo "No index_v*.html found"
+            echo "index_v*.html が見つかりません"
             exit 1
           fi
 
-          echo "Deploying $latest"
-          cp "$latest" public/index.html
+          echo "Latest file: $latest"
+          cp "$latest" _site/index.html
 
-          for f in manifest.webmanifest sw.js icon-192.png icon-512.png; do
-            if [ -f "$f" ]; then
-              cp "$f" "public/$f"
-            fi
-          done
+          if [ -f manifest.json ]; then
+            cp manifest.json _site/
+          fi
 
-          touch public/.nojekyll
+          if [ -f sw.js ]; then
+            cp sw.js _site/
+          fi
+
+          if [ -f icon-192.png ]; then
+            cp icon-192.png _site/
+          fi
+
+          if [ -f icon-512.png ]; then
+            cp icon-512.png _site/
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -62,7 +67,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
