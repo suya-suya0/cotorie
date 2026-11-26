@@ -1,0 +1,3084 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="コトリエ">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="theme-color" content="#8a78c8">
+<title>コトリエ / Cotorie<span style="font-size:10px;color:#9b91a8;margin-left:6px">v37</span></title>
+<style>
+:root{--bg:#fbf8f3;--paper:#fffdf9;--lav:#8a78c8;--lav2:#d8cef3;--blue:#dceef8;--pink:#f6dfe6;--ink:#383345;--muted:#7d7689;--line:#ebe4ef}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#fbf8f3,#f8f3fb);color:var(--ink);font-family:"Yu Gothic",system-ui,sans-serif}
+.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:84px}.top{position:sticky;top:0;z-index:5;background:#fbf8f3ee;backdrop-filter:blur(10px);padding:15px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:900;font-size:20px}.brand small{display:block;color:var(--muted);font-size:10px;font-weight:600}.role{border:1px solid var(--lav2);background:white;color:var(--lav);border-radius:999px;padding:8px 10px;font-weight:800}
+main{padding:15px}.hero,.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:15px;margin-bottom:12px;box-shadow:0 7px 22px #57496b12}
+.hero{background:linear-gradient(135deg,#eee7fb,#edf6fb,#fdf1f4)}h1,h2,h3,p{margin-top:0}.hero h1{font-size:21px;margin-bottom:5px}.muted,.card p{color:var(--muted);font-size:13px;line-height:1.55}
+.row{display:flex;align-items:center;gap:10px}.space{justify-content:space-between}.avatar{width:47px;height:47px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--pink),var(--blue));font-size:23px}
+.name{font-weight:900}.meta{color:var(--muted);font-size:11px}.tags{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0}.tag,.pill{font-size:10px;border-radius:999px;padding:5px 8px;background:#f5f1fa}.pill{color:#6656a3;font-weight:800}.btn{border:0;border-radius:13px;background:var(--lav);color:white;padding:10px 12px;font-weight:900}.btn.alt{background:white;color:var(--lav);border:1px solid var(--lav2)}.btn.soft{background:#f1ecfb;color:#6656a3}.btn.full{width:100%}
+.points{display:flex;justify-content:space-between;align-items:center;background:#fff9e8;border:1px solid #f1e7c7;border-radius:17px;padding:12px 14px;margin-bottom:12px}.points strong{font-size:22px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px}.grid2home{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px}.grid2home button{background:white;border:1px solid var(--line);border-radius:16px;padding:12px 5px;font-weight:800}.grid2home span{display:block;font-size:21px}.grid button{background:white;border:1px solid var(--line);border-radius:16px;padding:12px 5px;font-weight:800}.grid span{display:block;font-size:21px}
+.nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:#fffdf9f2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:7px}.nav button{border:0;background:transparent;color:#99919f;padding:4px}.nav button.active{color:var(--lav);font-weight:900}.nav b{display:block;font-size:18px}.nav small{font-size:9px}
+.section{font-size:15px;font-weight:900;margin:18px 2px 9px}.search{display:flex;gap:7px;margin-bottom:12px}.search input,.field textarea,.field input,.field select{width:100%;border:1px solid var(--line);border-radius:12px;background:white;padding:11px}.search input{flex:1}.message{padding:11px 0;border-bottom:1px solid var(--line)}.message:last-child{border:0}.live{color:#d85f6c;font-weight:900}.notice{font-size:11px;color:var(--muted);background:#f7f3f8;border-radius:12px;padding:9px 10px;line-height:1.5}
+.modalbg{position:fixed;inset:0;background:#312a3c66;z-index:20;display:grid;place-items:end center;padding:15px}.modal{width:min(500px,100%);background:var(--paper);padding:17px;border-radius:22px}.hidden{display:none!important}.field{margin:10px 0}.field label{display:block;font-size:11px;font-weight:800;margin-bottom:5px}
+.stat{font-size:23px;font-weight:900;color:var(--lav)}.bar{height:8px;border-radius:999px;background:#eee8f1;overflow:hidden}.bar div{height:100%;background:var(--lav)}
+
+/* v2: smartphone-app first */
+html,body{min-height:100%;overscroll-behavior:none}
+body{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.app{width:100%;max-width:480px;background:var(--bg);position:relative}
+.top{padding-top:max(15px,env(safe-area-inset-top));min-height:64px}
+.nav{padding-bottom:max(7px,env(safe-area-inset-bottom))}
+.btn,.nav button,.grid button,.role{min-height:44px}
+@media (min-width:700px){
+  body{background:#ebe7ef;display:flex;justify-content:center}
+  .app{box-shadow:0 0 40px #493d5d22}
+}
+.launch{
+  position:fixed;inset:0;z-index:100;background:
+  radial-gradient(circle at 25% 20%,#f8e6ed 0,transparent 32%),
+  radial-gradient(circle at 80% 25%,#e5f2fa 0,transparent 32%),
+  linear-gradient(160deg,#faf7f1,#f5effc);
+  display:flex;align-items:center;justify-content:center;padding:24px
+}
+.launchbox{width:min(430px,100%);text-align:center}
+.birdmark{
+  width:94px;height:94px;border-radius:28px;margin:0 auto 18px;
+  display:grid;place-items:center;font-size:48px;
+  background:white;border:1px solid var(--line);box-shadow:0 14px 40px #6356751f
+}
+.launch h1{font-size:30px;margin:0 0 4px}.launch .lead{color:var(--muted);margin-bottom:28px}
+.authcard{text-align:left;background:#fffdf9;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 14px 40px #63567514}
+.authcard h2{font-size:20px;margin-bottom:6px}.authcard .field input{font-size:16px}
+.rolepick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.rolepick button{border:1px solid var(--line);background:white;border-radius:18px;padding:16px 8px;color:var(--ink);font-weight:900}
+.rolepick button.selected{border-color:var(--lav);background:#f2edfb;color:#6553a0}
+.rolepick span{display:block;font-size:28px;margin-bottom:6px}
+.onboard-dots{display:flex;justify-content:center;gap:7px;margin:14px 0}
+.onboard-dots i{display:block;width:7px;height:7px;border-radius:50%;background:#d8d2db}
+.onboard-dots i.on{width:20px;border-radius:999px;background:var(--lav)}
+.installhint{display:none;margin:9px 0 0;padding:10px;border-radius:12px;background:#f5f1fa;color:var(--muted);font-size:11px;line-height:1.5}
+.appbadge{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:#6e6380;background:white;border:1px solid var(--line);border-radius:999px;padding:5px 8px;margin-top:8px}
+
+
+/* v8: アタメ一覧をスマホで押しやすく */
+.atame-user{
+  width:100%;
+  padding:10px 12px;
+  margin-bottom:8px;
+}
+.atame-user .row.space{
+  width:100%;
+  gap:12px;
+}
+.atame-user .row.space > .row{
+  flex:1;
+  min-width:0;
+}
+.atame-user .avatar{
+  width:46px;
+  height:46px;
+  font-size:22px;
+  flex:0 0 46px;
+}
+.atame-user .btn{
+  min-width:70px;
+  min-height:46px;
+  padding:0 14px;
+  border-radius:14px;
+  font-size:15px;
+  flex:0 0 auto;
+}
+.atame-user .name,
+.atame-user strong{
+  font-size:16px;
+}
+.atame-user .meta{
+  font-size:11px;
+  line-height:1.35;
+}
+.atame-name-line{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-bottom:2px;
+}
+.atame-inline-tags{
+  display:flex;
+  gap:4px;
+  flex-wrap:wrap;
+}
+.atame-inline-tags .tag{
+  padding:3px 6px;
+  font-size:9px;
+}
+#homeAtameList,
+#atameList{
+  width:100%;
+}
+
+
+/* v12: スマホとPCで同じUI */
+.app{
+  width:100%;
+  max-width:480px;
+  margin:0 auto;
+  min-height:100vh;
+  background:var(--bg);
+}
+.nav{
+  width:min(480px,100%);
+}
+@media (min-width:700px){
+  body{
+    background:#ece8f1;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    min-height:100vh;
+  }
+  .app{
+    width:480px;
+    min-height:100vh;
+    margin:0 auto;
+    background:var(--bg);
+    box-shadow:0 0 42px rgba(67,55,86,.16);
+    border-left:1px solid var(--line);
+    border-right:1px solid var(--line);
+  }
+  .top{
+    width:480px;
+    margin:0 auto;
+  }
+  .nav{
+    width:480px;
+  }
+  .launchbox{
+    width:430px;
+  }
+}
+
+
+/* v14 */
+.cotorie-logo{position:relative;display:flex;align-items:center;gap:5px;overflow:visible}
+.brand-text{font-weight:900;letter-spacing:.4px}
+.vine{color:#719064;font-size:15px;line-height:1;opacity:.95}
+.vine-left{transform:rotate(-24deg)}
+.vine-right{transform:scaleX(-1) rotate(-24deg)}
+.brand-bird{position:absolute;right:-18px;top:-7px;font-size:17px;filter:drop-shadow(0 2px 2px #0001)}
+.profile-head{display:flex;gap:12px;align-items:center}
+.profile-avatar{width:64px;height:64px;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-size:30px;background:linear-gradient(135deg,var(--pink),var(--blue));border:2px solid white;box-shadow:0 5px 14px #0001}
+.profile-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.profile-grid select{width:100%}
+.icon-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:8px}
+.icon-choice{border:1px solid var(--line);background:linear-gradient(180deg,#fff,#faf7fd);border-radius:16px;min-height:54px;font-size:25px;box-shadow:0 4px 12px #57496b0d}
+.icon-choice.active{border:2px solid var(--lav);background:#f0eafb;transform:translateY(-1px)}
+.upload-box{border:1.5px dashed #cfc5dc;border-radius:15px;padding:12px;background:#faf8fc}
+.ledger-item{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.ledger-item:last-child{border-bottom:0}.ledger-title{font-weight:800;font-size:13px}.ledger-sub{font-size:11px;color:var(--muted);margin-top:2px}.ledger-minus{font-weight:900;color:#9e6677;white-space:nowrap}
+.safety-note{font-size:11px;line-height:1.55;color:var(--muted);background:#f6f2f8;border-radius:12px;padding:9px 10px;margin-top:7px}
+
+
+/* v16: scrollable modal + profile time field */
+.modalbg{
+  overflow-y:auto;
+  align-items:flex-start;
+  padding-top:max(16px,env(safe-area-inset-top));
+  padding-bottom:max(16px,env(safe-area-inset-bottom));
+}
+.modal{
+  max-height:calc(100vh - 32px);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+@media (min-width:700px){
+  .modalbg{
+    align-items:center;
+  }
+  .modal{
+    max-height:calc(100vh - 48px);
+  }
+}
+.time-range{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.active-slot{
+  background:#eee8fb!important;
+  color:#6553a0!important;
+  border-color:#cfc1ef!important;
+  font-weight:900;
+}
+#activeSlotPicker .tag{
+  border:1px solid var(--line);
+  cursor:pointer;
+}
+
+/* v18 */
+.discover-head{display:flex;justify-content:space-between;align-items:center;margin:18px 2px 10px}
+.discover-head h2{font-size:16px;margin:0}.filter-link{border:1px solid var(--line);background:white;color:var(--lav);border-radius:999px;padding:7px 10px;font-size:11px;font-weight:900}
+.select-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice-wrap{display:flex;flex-wrap:wrap;gap:6px}.choice-chip{border:1px solid var(--line);background:white;border-radius:999px;padding:7px 9px;font-size:11px;color:var(--muted)}
+.choice-chip.active{background:#efeafb;color:#6553a0;border-color:#cfc1ef;font-weight:900}.history-card{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.history-card:last-child{border-bottom:0}.chat-shell{display:flex;flex-direction:column;gap:10px}.chat-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.chat-log{display:flex;flex-direction:column;gap:8px;max-height:52vh;overflow-y:auto;padding:8px 2px}.bubble{max-width:78%;padding:9px 11px;border-radius:16px;font-size:13px;line-height:1.45}
+.bubble.me{align-self:flex-end;background:#8a78c8;color:white;border-bottom-right-radius:5px}.bubble.them{align-self:flex-start;background:#f2eef5;color:var(--ink);border-bottom-left-radius:5px}
+.chat-compose{display:flex;gap:7px;align-items:flex-end}.chat-compose textarea{flex:1;min-height:46px;max-height:92px}.note-box{background:#fff9e8;border:1px solid #f0e3bc;border-radius:15px;padding:11px;margin-top:8px}
+.note-box textarea{min-height:72px}.section-tabs{display:flex;gap:8px;margin-bottom:10px}.section-tabs button{flex:1;border:1px solid var(--line);background:white;border-radius:13px;padding:9px;font-weight:800;color:var(--muted)}
+.section-tabs button.active{background:#efeafb;color:#6553a0;border-color:#d4c7ef}
+
+/* v21: message list cleanup */
+.msg-list{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 14px;box-shadow:0 6px 20px rgba(78,61,110,.06)}
+.msg-row{display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.msg-row:last-child{border-bottom:none}
+.msg-main{flex:1;min-width:0}
+.msg-name{font-weight:900;font-size:14px;margin-bottom:4px}
+.msg-preview{font-size:14px;line-height:1.45;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg-meta{font-size:10px;color:var(--muted);margin-top:3px}
+.unread-count{min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:var(--lav);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:900}
+
+
+/* v26: LINE-like cute chat compose + cast memo toggle */
+.chat-compose{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  background:#f6f1fb;
+  border:1px solid #e3d9f1;
+  border-radius:22px;
+  padding:8px;
+  box-shadow:0 4px 14px rgba(109,87,148,.08);
+}
+.chat-compose textarea{
+  flex:1;
+  min-height:42px;
+  max-height:90px;
+  border:none;
+  background:white;
+  border-radius:18px;
+  padding:11px 14px;
+  resize:none;
+  box-shadow:inset 0 0 0 1px #e7dff1;
+}
+.chat-compose textarea:focus{
+  outline:none;
+  box-shadow:inset 0 0 0 2px #c8b5ea;
+}
+.chat-send{
+  min-width:62px;
+  height:46px;
+  border-radius:16px;
+  font-weight:900;
+}
+.memo-mini-btn{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  border:1px solid #dbcdea;
+  background:white;
+  font-size:18px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+}
+.memo-drawer{
+  margin-top:10px;
+  background:#fff9e8;
+  border:1px solid #f0e3bc;
+  border-radius:16px;
+  padding:12px;
+}
+.memo-drawer textarea{
+  min-height:78px;
+  border-radius:14px;
+  background:#fffef9;
+}
+
+
+/* v27 */
+.chat-page{min-height:calc(100vh - 72px);display:flex;flex-direction:column;background:#f8f5fa;margin:-15px;padding:0 0 18px}
+.chat-page-head{position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(255,253,249,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.chat-back{border:0;background:transparent;font-size:24px;color:var(--lav);width:38px;height:38px;border-radius:12px}
+.chat-person{display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+.chat-page-log{flex:1;display:flex;flex-direction:column;gap:10px;padding:16px 14px 10px;overflow-y:auto}
+.chat-page-compose{position:sticky;bottom:0;display:flex;gap:8px;align-items:flex-end;margin:0 10px;padding:8px;background:#efe9f6;border:1px solid #dfd3ec;border-radius:22px;box-shadow:0 8px 22px rgba(81,63,111,.12)}
+.chat-page-compose textarea{flex:1;min-height:44px;max-height:90px;border:0;border-radius:18px;padding:11px 14px;background:white;resize:none}
+.chat-page-compose textarea:focus{outline:2px solid #c8b5ea}
+.chat-page-note{margin:0 12px 10px}
+.atame-avatar-btn{border:0;background:transparent;padding:0;display:block;border-radius:50%;cursor:pointer}
+.radio-tag-wrap{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 12px}
+.radio-tag{border:1px solid var(--line);background:white;color:var(--muted);padding:7px 10px;border-radius:999px;font-size:11px}
+.radio-tag.active{background:#eee8fb;color:#6553a0;border-color:#cfc1ef;font-weight:900}
+.radio-search{display:flex;gap:8px;margin-bottom:10px}
+.radio-search input{flex:1;border:1px solid var(--line);border-radius:14px;padding:11px 12px}
+
+
+/* v30: separated login entry for user / cast */
+.login-gate{
+  min-height:calc(100vh - 20px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px 14px 40px;
+}
+.login-card{
+  width:min(100%,430px);
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:22px;
+  box-shadow:0 12px 30px rgba(79,61,111,.10);
+}
+.login-brand{
+  text-align:center;
+  margin-bottom:18px;
+}
+.login-brand h1{
+  margin:4px 0 6px;
+  font-size:28px;
+}
+.login-role-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:16px 0;
+}
+.login-role-card{
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:18px 12px;
+  background:white;
+  text-align:center;
+  cursor:pointer;
+}
+.login-role-card strong{display:block;font-size:15px;margin-top:8px}
+.login-role-card .role-emoji{font-size:32px}
+.login-role-card.active{
+  border-color:#c7b6ea;
+  background:#f4effc;
+  box-shadow:inset 0 0 0 1px #c7b6ea;
+}
+.login-form{margin-top:12px}
+.login-form .field{margin-bottom:12px}
+.login-note{
+  margin-top:12px;
+  font-size:11px;
+  line-height:1.6;
+  color:var(--muted);
+  text-align:center;
+}
+.login-switch{
+  margin-top:12px;
+  text-align:center;
+}
+.app-role-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:11px;
+  font-weight:900;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#f1ecf8;
+  color:#6553a0;
+}
+
+
+/* v31: real chat */
+.chat-status{font-size:10px;color:var(--muted);margin-left:auto}
+.chat-empty{padding:28px 12px;text-align:center;color:var(--muted);font-size:12px}
+.chat-message-time{font-size:9px;opacity:.65;margin-top:4px}
+.chat-page-log .bubble{max-width:78%;word-break:break-word}
+.chat-page-log .bubble.me{align-self:flex-end}
+.chat-page-log .bubble.them{align-self:flex-start}
+.chat-config{margin:12px 0}
+.chat-config input{width:100%;box-sizing:border-box}
+
+
+/* v34: visible Supabase connection status */
+.connection-status{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  font-size:12px;
+  line-height:1.5;
+  background:#f5f2f8;
+  border:1px solid var(--line);
+}
+.connection-status.ok{background:#eef9f1;border-color:#bfe0c7}
+.connection-status.ng{background:#fff1f1;border-color:#efc5c5}
+.connection-status.wait{background:#fff9e8;border-color:#ead9a7}
+
+
+#chatConnectBtn{
+  display:block !important;
+  width:100% !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  margin-top:12px;
+}
+
+
+/* v40: reliable persisted chat */
+.bubble.pending{opacity:.62}
+.bubble.failed{border:1px solid #e7a9a9}
+.chat-error{
+  margin:6px 12px 0;
+  padding:8px 10px;
+  border-radius:12px;
+  background:#fff1f1;
+  border:1px solid #efc5c5;
+  font-size:11px;
+  color:#8f3d3d;
+}
+
+
+/* v42: stamps + real audio radio */
+.stamp-btn{
+  width:42px;height:42px;border-radius:14px;border:1px solid #dbcdea;
+  background:white;font-size:20px;display:grid;place-items:center;flex:0 0 auto
+}
+.stamp-panel{
+  margin:0 10px 10px;padding:10px;background:#fff;border:1px solid var(--line);
+  border-radius:18px;box-shadow:0 8px 22px rgba(81,63,111,.10)
+}
+.stamp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stamp-item{
+  border:1px solid var(--line);background:#fffafc;border-radius:16px;
+  min-height:72px;padding:8px 4px;text-align:center
+}
+.stamp-emoji{font-size:28px;line-height:1.1;display:block}
+.stamp-label{font-size:10px;color:var(--muted);margin-top:5px;display:block}
+.stamp-message{
+  background:transparent !important;border:none !important;box-shadow:none !important;
+  padding:0 !important;font-size:48px;line-height:1.05
+}
+.stamp-message .chat-message-time{font-size:9px;margin-top:3px}
+.radio-live-card{border:1px solid #e2d8ef;border-radius:20px;padding:14px;background:#fff}
+.radio-room-title{font-size:16px;font-weight:900}
+.radio-live-status{font-size:11px;color:var(--muted)}
+.radio-control-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.radio-meter{height:8px;border-radius:999px;background:#eee8f6;overflow:hidden;margin-top:10px}
+.radio-meter > span{display:block;height:100%;width:0%;background:currentColor;transition:width .12s linear}
+.radio-host-box{padding:12px;border-radius:16px;background:#f8f4fb;border:1px solid var(--line);margin-top:10px}
+
+
+/* v43: radio cover / overlay / stats */
+.radio-cover-card{
+  border:1px solid #e2d8ef;border-radius:22px;overflow:hidden;background:#fff;margin-top:10px
+}
+.radio-cover{
+  position:relative;height:148px;background:linear-gradient(135deg,#efe8fb,#f8f2ff);
+  display:flex;align-items:flex-end;justify-content:flex-start;overflow:hidden
+}
+.radio-cover.has-image{
+  background-size:cover;background-position:center;
+}
+.radio-cover::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(40,26,63,.05),rgba(40,26,63,.38));
+}
+.radio-cover-inner{
+  position:relative;z-index:1;padding:14px;color:#fff;width:100%
+}
+.radio-cover-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;
+  background:rgba(255,255,255,.22);backdrop-filter:blur(4px);font-size:10px;font-weight:700
+}
+.radio-cover-title{
+  font-size:20px;font-weight:900;line-height:1.2;margin-top:8px;text-shadow:0 2px 10px rgba(0,0,0,.22)
+}
+.radio-cover-desc{
+  font-size:12px;line-height:1.5;color:#57486b;padding:12px 14px 14px
+}
+.radio-cover-emptyicon{
+  position:absolute;right:18px;top:18px;font-size:58px;opacity:.85;z-index:1
+}
+.radio-summary{
+  margin-top:12px;padding:14px;border-radius:18px;background:#fbf8fe;border:1px solid var(--line)
+}
+.radio-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.radio-stat{
+  padding:12px;border-radius:16px;background:white;border:1px solid var(--line);text-align:center
+}
+.radio-stat strong{display:block;font-size:22px}
+.radio-preview-note{font-size:11px;color:var(--muted);margin-top:6px}
+.radio-file{margin-top:6px}
+
+
+/* v44: live radio cover/comments/mute/cast chat */
+.live-stage{
+  position:relative;border:1px solid #e2d8ef;border-radius:24px;overflow:hidden;background:#fff;margin-top:8px
+}
+.live-stage-cover{
+  position:relative;height:270px;background:linear-gradient(135deg,#efe8fb,#f8f2ff);
+  background-size:cover;background-position:center;display:flex;align-items:stretch;justify-content:stretch
+}
+.live-stage-cover::after{
+  content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(35,18,56,.08),rgba(35,18,56,.50));
+}
+.live-stage-inner{
+  position:relative;z-index:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;padding:16px;color:#fff
+}
+.live-header-badges{display:flex;gap:8px;flex-wrap:wrap}
+.live-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
+  background:rgba(255,255,255,.18);backdrop-filter:blur(6px);font-size:11px;font-weight:800
+}
+.live-stage-title{font-size:22px;font-weight:900;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,.24)}
+.live-stage-desc{font-size:12px;line-height:1.45;max-width:85%;text-shadow:0 2px 8px rgba(0,0,0,.20)}
+.live-activity-box{
+  display:inline-block;max-width:88%;padding:10px 12px;border-radius:16px;
+  background:rgba(255,255,255,.20);backdrop-filter:blur(8px);font-size:13px;font-weight:700
+}
+.live-comment-overlay{
+  position:absolute;left:14px;bottom:14px;z-index:2;display:flex;flex-direction:column;gap:8px;max-width:min(82%,520px)
+}
+.live-comment-bubble{
+  align-self:flex-start;padding:8px 12px;border-radius:16px 16px 16px 6px;
+  background:rgba(255,255,255,.88);box-shadow:0 8px 18px rgba(24,10,44,.14)
+}
+.live-comment-bubble.cast{
+  background:rgba(146,122,217,.94);color:#fff;border-radius:16px 16px 6px 16px;align-self:flex-end
+}
+.live-comment-name{font-size:10px;font-weight:800;color:#7b668f}
+.live-comment-bubble.cast .live-comment-name{color:#efe7ff}
+.live-comment-body{font-size:13px;line-height:1.4}
+.live-empty-comments{
+  padding:8px 12px;border-radius:16px;background:rgba(255,255,255,.78);font-size:12px;color:#6a5b7b
+}
+.live-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.live-controls .btn{flex:1 1 120px}
+.radio-live-edit{
+  display:grid;gap:10px;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:18px;background:#fbf8fe
+}
+.listener-chat-panel{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.listener-chat-log{
+  max-height:180px;overflow:auto;display:flex;flex-direction:column;gap:8px;margin-top:10px
+}
+.listener-chat-item{
+  padding:8px 10px;border-radius:14px;background:#f7f3fb
+}
+.listener-chat-item.cast{background:#eee5ff}
+.listener-chat-name{font-size:10px;font-weight:800;color:#745e8f}
+.listener-chat-input{
+  display:flex;gap:8px;margin-top:10px
+}
+.listener-chat-input input{flex:1}
+
+
+/* v45: cast chat appears from bottom-right */
+.live-comment-overlay{
+  position:absolute;left:14px;right:14px;bottom:14px;z-index:2;
+  display:flex;flex-direction:column;gap:8px;max-width:none;pointer-events:none;
+}
+.live-comment-bubble{max-width:82%;align-self:flex-start}
+.live-comment-bubble.cast{
+  align-self:flex-end;margin-left:auto;
+  background:rgba(146,122,217,.96);color:#fff;
+  border-radius:16px 16px 6px 16px;
+}
+
+
+/* v46: mobile-first live radio UI */
+.live-stage{
+  margin:0;
+  border-radius:0;
+  border-left:0;
+  border-right:0;
+  background:#fff;
+}
+.live-stage-cover{
+  height:58vh;
+  min-height:360px;
+  max-height:620px;
+  border-radius:0;
+}
+.live-stage-inner{
+  padding:14px 14px 18px;
+}
+.live-stage-title{
+  font-size:21px;
+  max-width:88%;
+}
+.live-stage-desc{
+  max-width:92%;
+  font-size:12px;
+}
+.live-activity-box{
+  max-width:92%;
+  font-size:12px;
+  padding:9px 11px;
+}
+.live-comment-overlay{
+  left:10px;
+  right:10px;
+  bottom:12px;
+  gap:6px;
+}
+.live-comment-bubble{
+  max-width:88%;
+  padding:7px 10px;
+  border-radius:13px 13px 13px 5px;
+  background:rgba(255,255,255,.90);
+}
+.live-comment-bubble.cast{
+  align-self:flex-end;
+  margin-left:auto;
+  border-radius:13px 13px 5px 13px;
+  background:rgba(146,122,217,.96);
+  color:#fff;
+}
+.live-comment-line{
+  font-size:12px;
+  line-height:1.35;
+  word-break:break-word;
+}
+.live-comment-line .viewer-name{
+  font-weight:900;
+  color:#6d5587;
+}
+.live-comment-bubble.cast .live-comment-line{
+  color:#fff;
+  font-weight:700;
+}
+.live-controls{
+  position:sticky;
+  bottom:0;
+  z-index:6;
+  margin:0;
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(255,253,249,.96);
+  backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.live-controls .btn{
+  min-height:44px;
+  width:100%;
+}
+.live-controls .btn:last-child{
+  grid-column:1 / -1;
+}
+.radio-live-edit{
+  margin:12px;
+}
+.listener-chat-panel{
+  margin:12px;
+}
+.listener-chat-input{
+  position:sticky;
+  bottom:0;
+  background:#fff;
+  padding-top:8px;
+}
+.listener-chat-item{
+  font-size:12px;
+  padding:7px 9px;
+}
+.listener-chat-line{
+  line-height:1.4;
+  word-break:break-word;
+}
+.listener-chat-line .viewer-name{
+  font-weight:900;
+  color:#6d5587;
+}
+.listener-chat-item.cast{
+  margin-left:auto;
+  max-width:86%;
+  background:#eee5ff;
+}
+.listener-chat-item.cast .viewer-name{
+  display:none;
+}
+@media (min-width: 600px){
+  .live-stage{
+    border:1px solid #e2d8ef;
+    border-radius:24px;
+    overflow:hidden;
+  }
+  .live-stage-cover{
+    height:420px;
+  }
+}
+
+
+/* v47: LINE-like cast chat directly below live image */
+.cast-chat-panel{
+  margin:0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:#fff;
+}
+.cast-chat-log{
+  max-height:210px;
+  overflow:auto;
+  padding:10px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  background:#f7f4fb;
+}
+.cast-chat-empty{
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+  padding:14px 8px;
+}
+.cast-chat-row{
+  display:flex;
+  justify-content:flex-end;
+}
+.cast-chat-bubble{
+  max-width:82%;
+  padding:8px 11px;
+  border-radius:16px 16px 6px 16px;
+  background:#8f78d4;
+  color:#fff;
+  font-size:13px;
+  line-height:1.4;
+  word-break:break-word;
+}
+.cast-chat-compose{
+  display:flex;
+  gap:8px;
+  align-items:flex-end;
+  padding:9px 10px calc(9px + env(safe-area-inset-bottom));
+  background:#fff;
+}
+.cast-chat-compose textarea{
+  flex:1;
+  min-height:42px;
+  max-height:90px;
+  resize:none;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:10px 12px;
+  background:#fff;
+}
+.cast-chat-compose textarea:focus{
+  outline:2px solid #cbbcf0;
+}
+.cast-chat-compose .btn{
+  min-width:62px;
+  min-height:42px;
+  border-radius:16px;
+}
+
+
+.safety-detail{border-bottom:1px solid #e3dcec;padding:12px 0}.safety-detail summary,.safety-chat summary{cursor:pointer;font-weight:700}.safety-detail li{margin:7px 0;line-height:1.6}.safety-checks{display:grid;gap:10px;margin:14px 0}.safety-checks label{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.5}.safety-checks input[type=checkbox]{width:19px;height:19px;flex:none;accent-color:#9179cd}.safety-chat{font-size:12px;padding:8px 12px;background:#f5f0fa;flex-shrink:0}.safety-gate{overflow-wrap:anywhere}.safety-gate .btn{margin-top:8px}.modal{max-height:85dvh;overflow:auto}.card .btn.full{margin-top:6px}
+
+/* v50: visual themes; mobile-first */
+:root{--accent-deep:#7350ad;--accent-grad:linear-gradient(120deg,#8557b8,#a75e99);--hero-grad:linear-gradient(125deg,#e9ddfc,#fce4ee 55%,#fff0d1);--bg:#fcf5fa;--paper:#fff;--lav:#7951b1;--lav2:#ddc9f0;--ink:#34283f;--muted:#6e5d78;--line:#ecdced}
+:root[data-theme="sky"]{--accent-grad:linear-gradient(120deg,#376f9e,#5577b5);--hero-grad:linear-gradient(125deg,#d9f3fa,#e5e9ff 60%,#fff1d6);--bg:#f2f8fc;--lav:#3e689c;--lav2:#bcd9ec;--line:#d9e7f0;--muted:#536b80;--ink:#263d54}
+:root[data-theme="jewel"]{--accent-grad:linear-gradient(120deg,#6650a2,#a14f80);--hero-grad:linear-gradient(125deg,#e5defb,#f8d8e9 60%,#d9f3eb);--bg:#f8f3fb;--lav:#754a9b;--lav2:#d5bee9;--line:#e6d8ef;--muted:#6e5d80;--ink:#382c49}
+.app{background:var(--bg)}.top{background:var(--paper);border-bottom:1px solid var(--line)}.brand{color:var(--lav)}.hero{position:relative;overflow:hidden;background:var(--hero-grad);padding:21px 16px;isolation:isolate;border:1px solid var(--line)}.hero:after{content:"";position:absolute;right:-32px;top:-38px;width:135px;height:135px;border-radius:50%;border:22px solid #ffffff55;z-index:-1;pointer-events:none}.hero h1{font-weight:900}.hero p{margin-bottom:0}.card{border-radius:20px;box-shadow:0 5px 15px #41244b0b}.btn:not(.alt):not(.soft):not(.secondary){background:var(--accent-grad);color:#fff}.btn.alt{color:var(--lav);border-color:var(--lav2)}.btn:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--lav);outline-offset:2px}.nav{width:min(480px,100%);background:var(--paper)}.nav button.active{background:var(--hero-grad);border-radius:13px;color:var(--lav)}.avatar{flex-shrink:0;background:var(--hero-grad)}.tag{background:var(--bg);color:var(--ink)}.points{background:linear-gradient(115deg,#fff1cd,#fff9e9);color:#614526}.theme-pick{display:grid;grid-template-columns:1fr;gap:8px}.theme-choice{min-height:54px;display:flex;align-items:center;gap:12px;text-align:left;padding:9px;border-radius:14px;border:1px solid var(--line);background:white;color:var(--ink);font-weight:700}.theme-choice[aria-pressed="true"]{border:2px solid var(--lav)}.theme-swatch{width:65px;height:36px;border-radius:10px;flex-shrink:0}.field select,.field input,.searchbar input{font-size:16px;min-height:44px}.row>.btn{min-width:0;overflow-wrap:anywhere}.card .row>div{min-width:0}.card .name{overflow-wrap:anywhere}@media(max-width:360px){main{padding:10px}.card{padding:12px}.card .row{gap:6px}.card .pill{white-space:normal}}
+</style>
+</head>
+<body>
+<div id="launch" class="launch">
+  <div class="launchbox" id="launchBox"></div>
+</div>
+<div class="app">
+<header class="top"><div class="brand cotorie-logo">
+      <span class="vine vine-left">❦</span>
+      <span class="brand-text">Cotorie</span>
+      <span class="vine vine-right">❦</span>
+      <span class="brand-bird">🐦</span>
+    </div><button id="role" class="role" title="試作版：利用者/キャスト切替">利用者モード</button></header>
+<main id="main"></main>
+<nav class="nav">
+<button data-page="home" class="active"><b>⌂</b><small>ホーム</small></button>
+<button data-page="search"><b>⌕</b><small>さがす</small></button>
+<button data-page="messages"><b>✉</b><small>メッセージ</small></button>
+<button data-page="radio"><b>◉</b><small>ラジオ</small></button>
+<button data-page="mypage"><b>☻</b><small>マイページ</small></button>
+</nav></div>
+<div id="modalbg" class="modalbg hidden"><div id="modal" class="modal"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(async function cotorieV37CacheCleanup(){
+  try{
+    if("serviceWorker" in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r=>r.unregister()));
+    }
+    if("caches" in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.map(k=>caches.delete(k)));
+    }
+  }catch(e){
+    console.warn("cache cleanup",e);
+  }
+})();
+
+
+
+
+
+async function syncCotorieProfile(){
+  const client=ensureChatClient();
+  if(!client){
+    throw new Error("Supabaseクライアントを作成できませんでした");
+  }
+
+  const role=S.role||"user";
+  const p=getProfile(role);
+  const account_id=currentAccountId();
+
+  const payload={
+    account_id:account_id,
+    role:role,
+    nickname:(p&&p.name)||role,
+    avatar_text:(p&&p.icon)||"",
+    hobbies:(p&&p.hobbies)||"",
+    bio:(p&&p.bio)||"",
+    updated_at:new Date().toISOString()
+  };
+
+  const response=await client
+    .from("cotorie_profiles")
+    .upsert(payload,{onConflict:"account_id"});
+
+  if(response.error){
+    throw response.error;
+  }
+  return response.data;
+}
+
+
+window.syncCotorieProfile=syncCotorieProfile;
+
+function safeJSON(value, fallback){
+  try{return value ? JSON.parse(value) : fallback;}catch(e){return fallback;}
+}
+const GENDER_OPTIONS=["非公開","女性","男性","その他"];
+function genderOptions(value,filter=false){return (filter?["",...GENDER_OPTIONS]:GENDER_OPTIONS).map(g=>`<option value="${g}" ${g===value?"selected":""}>${g||"指定なし"}</option>`).join("")}
+const defaultProfiles={
+  user:{
+    name:"ことり",icon:"🐦",image:"",bio:"最近は夜にゆっくり話せる相手を探してます。",
+    hobbies:"ゲーム / 本 / 映画",free:"好きな時間にのんびり話したいです。",
+    alcohol:"飲まない",smoking:"吸わない",gambling:"しない",
+    activeSlots:["夜","深夜","土日"]
+  },
+  cast:{
+    gender:"非公開",name:"ひな",icon:"🌙",image:"",bio:"眠れない夜に、のんびり話そ。",
+    hobbies:"ゲーム / 読書 / 夜更かし",free:"雑談も愚痴聞きも歓迎です。",
+    activeSlots:["夜","深夜","土日"]
+  }
+};
+
+const APP={
+  onboarded:localStorage.cotorie_onboarded==="1",
+  displayName:localStorage.cotorie_displayName||"",
+  selectedRole:localStorage.cotorie_selectedRole||"user"
+};
+
+function launchRender(step=APP.onboarded?99:0){
+  const launch=document.querySelector("#launch");
+  const box=document.querySelector("#launchBox");
+  if(step===99){
+    launch.classList.add("hidden");
+    return;
+  }
+  launch.classList.remove("hidden");
+
+  if(step===0){
+    box.innerHTML=`
+      <div class="birdmark">🐦</div>
+      <h1>Cotorie</h1>
+      <div class="lead"></div>
+      <div class="authcard">
+        <h2>コトリエへようこそ</h2>
+        <p class="muted">20歳以上限定の、ノンアダルトなコミュニケーションサービス。</p>
+        <button class="btn full" onclick="launchRender(1)">はじめる</button>
+        <button class="btn alt full" style="margin-top:9px" onclick="demoLogin()">ログイン</button>
+        <div class="appbadge">📱 スマホアプリ向け試作版</div>
+      </div>`;
+    return;
+  }
+
+  if(step===1){
+    box.innerHTML=`
+      <div class="birdmark">🪽</div>
+      <div class="onboard-dots"><i class="on"></i><i></i><i></i></div>
+      <div class="authcard">
+        <h2>どちらとして使いますか？</h2>
+        <p class="muted">あとから試作版の切替ボタンでも確認できます。</p>
+        <div class="rolepick">
+          <button id="pickUser" class="selected" onclick="pickRole('user')"><span>💬</span>利用者</button>
+          <button id="pickCast" onclick="pickRole('cast')"><span>🌙</span>キャスト</button>
+        </div>
+        <button class="btn full" onclick="launchRender(2)">次へ</button>
+      </div>`;
+    APP.selectedRole="user";
+    return;
+  }
+
+  if(step===2){
+    box.innerHTML=`
+      <div class="birdmark">✍️</div>
+      <div class="onboard-dots"><i></i><i class="on"></i><i></i></div>
+      <div class="authcard">
+        <h2>プロフィールをつくる</h2>
+        <p class="muted">本番ではここに本人確認や20歳以上確認が入ります。</p>
+        <div class="field"><label>ニックネーム</label><input id="newName" value="${APP.selectedRole==="cast"?"ひな":"ことり"}" maxlength="20"></div>
+        <div class="field"><label>メールアドレス</label><input type="email" placeholder="example@cotorie.jp"></div>
+        <div class="field"><label>パスワード</label><input type="password" value="demopass"></div>
+        <button class="btn full" onclick="completeSignup()">登録してはじめる</button>
+      </div>`;
+    return;
+  }
+
+  if(step===3){
+    box.innerHTML=`
+      <div class="birdmark">✓</div>
+      <div class="onboard-dots"><i></i><i></i><i class="on"></i></div>
+      <div class="authcard" style="text-align:center">
+        <h2>準備できました</h2>
+        <p class="muted">${APP.selectedRole==="cast"?"キャスト":"利用者"}としてコトリエを体験できます。</p>
+        <button class="btn full" onclick="enterApp()">コトリエを開く</button>
+      </div>`;
+  }
+}
+function pickRole(role){
+  APP.selectedRole=role;
+  document.querySelector("#pickUser")?.classList.toggle("selected",role==="user");
+  document.querySelector("#pickCast")?.classList.toggle("selected",role==="cast");
+}
+function completeSignup(){
+  const name=document.querySelector("#newName")?.value.trim();
+  if(!name){alert("ニックネームを入力してください");return;}
+  APP.displayName=name;
+  localStorage.cotorie_displayName=name;
+  localStorage.cotorie_selectedRole=APP.selectedRole;
+  launchRender(3);
+}
+function enterApp(){
+  APP.onboarded=true;
+  localStorage.cotorie_onboarded="1";
+  S.role=APP.selectedRole;
+  save();
+  document.querySelector("#launch").classList.add("hidden");
+  render();
+  showInstallHint();
+}
+function demoLogin(){
+  APP.onboarded=true;
+  APP.displayName=localStorage.cotorie_displayName||"ことり";
+  APP.selectedRole=localStorage.cotorie_selectedRole||"user";
+  localStorage.cotorie_onboarded="1";
+  S.role=APP.selectedRole;
+  save();
+  document.querySelector("#launch").classList.add("hidden");
+  render();
+  showInstallHint();
+}
+
+function recoverDemo(){
+  const btn=document.querySelector("#recoveryResetBtn");
+  if(btn){
+    btn.disabled=true;
+    btn.textContent="リセット中…";
+  }
+
+  try{
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // After reset, reopen directly as a demo user so the button actually
+    // leads back into the app instead of returning to a broken recovery state.
+    localStorage.setItem("cotorie_onboarded","1");
+    localStorage.setItem("cotorie_selectedRole","user");
+    localStorage.setItem("cotorie_displayName","ことり");
+  }catch(e){
+    console.warn("reset storage:",e);
+  }
+
+  const base=location.pathname.endsWith("/") ? location.pathname : location.pathname;
+  location.href=base + "?fresh=" + Date.now();
+}
+
+function resetDemo(){
+  try{
+    localStorage.clear();
+    sessionStorage.clear();
+  }catch(e){}
+  S.loggedIn=false;
+  S.loginRole="user";
+  S.role="user";
+  S.page="home";
+  render();
+}
+function showInstallHint(){
+  if(window.matchMedia("(display-mode: standalone)").matches) return;
+  setTimeout(()=>{
+    const el=document.querySelector("#installHint");
+    if(el) el.style.display="block";
+  },400);
+}
+const savedLedger=safeJSON(localStorage.cotorie_pointLedger,null);
+const savedProfiles=safeJSON(localStorage.cotorie_profiles,null);
+const savedAtameSent=safeJSON(localStorage.atameSent,null);
+
+const S={
+  role:localStorage.role||"user",
+  page:"home",
+  points:Number.isFinite(+(localStorage.points)) ? +(localStorage.points) : 1200,
+  earn:Number.isFinite(+(localStorage.earn)) ? +(localStorage.earn) : 860,
+  atameTemplate:Number.isFinite(+(localStorage.atameTemplate)) ? +(localStorage.atameTemplate) : 0,
+  atameSent:(savedAtameSent && typeof savedAtameSent==="object" && !Array.isArray(savedAtameSent)) ? savedAtameSent : {},
+  available:localStorage.cotorie_available!=="0",
+  pointLedger:Array.isArray(savedLedger) ? savedLedger : [
+    {title:"あかりさんとお話し",pt:40,time:"今日 10:42"},
+    {title:"ラジオ視聴",pt:2,time:"今日 09:18"},
+    {title:"ひなさんとお話し",pt:40,time:"昨日 23:31"}
+  ],
+  profiles:(savedProfiles && typeof savedProfiles==="object" && !Array.isArray(savedProfiles)) ? savedProfiles : JSON.parse(JSON.stringify(defaultProfiles)),
+  spokenWith:Array.isArray(safeJSON(localStorage.cotorie_spokenWith,null)) ? safeJSON(localStorage.cotorie_spokenWith,null) : [1,2],
+  castNotes:(()=>{
+    const notes=safeJSON(localStorage.cotorie_castNotes,null);
+    return notes && typeof notes==="object" && !Array.isArray(notes) ? notes : {};
+  })()
+};
+S.profiles.user={...defaultProfiles.user,...((S.profiles.user && typeof S.profiles.user==="object") ? S.profiles.user : {})};
+S.profiles.cast={...defaultProfiles.cast,...((S.profiles.cast && typeof S.profiles.cast==="object") ? S.profiles.cast : {})};
+let atameTemplates = safeJSON(localStorage.atameTemplates,null);
+if(!Array.isArray(atameTemplates) || !atameTemplates.length) atameTemplates = [
+  {name:"趣味が近い人へ", body:"こんばんは！プロフィールを見て、趣味が近そうだなと思ってメッセージしました。よかったら少しお話ししませんか？"},
+  {name:"ゲーム好きさんへ", body:"こんばんは！ゲーム好きなんですね🎮 私もよく遊ぶので、最近やってるゲームの話とかできたら嬉しいです！"},
+  {name:"夜更かしさんへ", body:"こんばんは🌙 まだ起きてますか？私も夜型なので、よかったらのんびりお話ししませんか？"}
+];
+
+// v7 demo migration: previous tests may have marked every sample user as "sent".
+if(localStorage.cotorie_demo_version!=="7"){
+  S.atameSent={};
+  localStorage.atameSent="{}";
+  localStorage.cotorie_demo_version="7";
+}
+
+const casts=[
+{gender:"女性",name:"ひな",age:25,area:"東京",a:"🌙",status:"おはなしできます",online:true,tags:["ゲーム","読書","夜更かし"],bio:"眠れない夜に、のんびり話そ。"},
+{gender:"女性",name:"あかり",age:28,area:"神奈川",a:"🫖",status:"ラジオ中",online:true,tags:["紅茶","映画","旅行"],bio:"聞くのが好きです。愚痴も歓迎◎"},
+{gender:"女性",name:"ゆい",age:24,area:"埼玉",a:"🐤",status:"今夜ログイン",online:false,tags:["アニメ","料理","猫"],bio:"最近は作り置きにハマってます。"},
+{gender:"女性",name:"さくら",age:30,area:"千葉",a:"📚",status:"おはなしできます",online:true,tags:["本","カフェ","散歩"],bio:"静かな雑談と読書の話が好き。"},
+{gender:"女性",name:"みお",age:27,area:"大阪",a:"🎧",status:"おはなしできます",online:true,tags:["音楽","ゲーム","映画"],bio:"音楽聴きながら夜更かししがち。"},
+{gender:"女性",name:"なな",age:29,area:"北海道",a:"🌿",status:"おはなしできます",online:true,tags:["旅行","植物","カフェ"],bio:"のんびり雑談が好きです。"},
+{gender:"女性",name:"りん",age:26,area:"福岡",a:"🧸",status:"おはなしできます",online:true,tags:["美容","料理","アニメ"],bio:"まったりお話しよ〜。"},
+{gender:"男性",name:"律",age:28,area:"東京",a:"🎸",status:"おはなしできます",online:true,tags:["音楽","読書","映画"],bio:"仕事帰りの雑談、音楽の話も歓迎。"},
+{gender:"男性",name:"湊",age:31,area:"京都",a:"☕",status:"おはなしできます",online:true,tags:["カフェ","散歩","ゲーム"],bio:"ゆっくり話すのが好きです。"},
+{gender:"非公開",name:"しお",age:26,area:"大阪",a:"🪽",status:"おはなしできます",online:true,tags:["創作","読書","アニメ"],bio:"創作や日常の話を気軽にどうぞ。"}
+];
+const DEMO_USERS=[
+  {name:"タク",a:"🎧",online:true,tags:["音楽","ゲーム","晩酌"],bio:"ゲームや音楽の話が好きです。"},
+  {name:"ケン",a:"🦊",online:true,tags:["アニメ","旅行","猫"],bio:"旅行とアニメの話をよくします。"},
+  {name:"ソウ",a:"☕",online:false,tags:["カフェ","映画"],bio:"映画とカフェ巡りが好きです。"}
+];
+
+const ATAME_PEOPLE=[
+  {a:"🎧",name:"タク",age:29,area:"東京",lastMin:5,tags:["音楽","ゲーム","晩酌"],online:true,newUser:true},
+  {a:"🦊",name:"ケン",age:27,area:"東京",lastMin:18,tags:["アニメ","旅行","猫"],online:true,newUser:false},
+  {a:"🌿",name:"れん",age:34,area:"千葉",lastMin:64,tags:["植物","読書"],online:false,newUser:false},
+  {a:"☕",name:"ソウ",age:31,area:"神奈川",lastMin:12,tags:["カフェ","映画"],online:true,newUser:true},
+  {a:"🎮",name:"ユウ",age:26,area:"埼玉",lastMin:33,tags:["ゲーム","アニメ"],online:false,newUser:false},
+  {a:"📚",name:"レオ",age:32,area:"東京",lastMin:8,tags:["読書","映画","カフェ"],online:true,newUser:false}
+];
+
+function save(){
+  localStorage.role=S.role;
+  localStorage.points=S.points;
+  localStorage.earn=S.earn;
+  localStorage.atameTemplate=S.atameTemplate;
+  localStorage.atameSent=JSON.stringify(S.atameSent);
+  localStorage.atameTemplates=JSON.stringify(atameTemplates);
+  localStorage.cotorie_available=S.available?"1":"0";
+  localStorage.cotorie_pointLedger=JSON.stringify(S.pointLedger);
+  localStorage.cotorie_profiles=JSON.stringify(S.profiles);
+  localStorage.cotorie_spokenWith=JSON.stringify(S.spokenWith);
+  localStorage.cotorie_castNotes=JSON.stringify(S.castNotes);
+  localStorage.cotorie_spokenWith=JSON.stringify(S.spokenWith);
+  localStorage.cotorie_castNotes=JSON.stringify(S.castNotes);
+
+  localStorage.cotorie_loggedIn=S.loggedIn?"1":"0";
+  localStorage.cotorie_loginRole=S.loginRole||"";
+}
+function card(c,i){return `<div class="card"><div class="row space"><div class="row"><div class="avatar">${c.a}</div><div><div class="name">${c.name} <span class="pill">サンプル</span></div><div class="meta">${c.age}歳・${c.area}・${esc(c.gender||"非公開")}</div></div></div><span class="pill">${c.status}</span></div><div class="tags">${c.tags.map(x=>`<span class="tag">${x}</span>`).join("")}</div><p>${c.bio}</p><div class="row"><button class="btn" onclick="openChat(${i},&quot;user&quot;)">はなしかける</button><button class="btn alt" onclick="profile(${i})">プロフィール</button></div></div>`}
+
+function getProfile(role){return S.profiles[role||S.role] || defaultProfiles.user}
+function profileAvatar(role){
+  const p=getProfile(role);
+  if(p.image) return `<img src="${p.image}" alt="プロフィール画像">`;
+  return esc(p.icon||"🐦");
+}
+function addLedger(title,pt){
+  S.pointLedger.unshift({title,pt,time:"たった今"});
+  S.pointLedger=S.pointLedger.slice(0,20);
+}
+function openProfileEditor(role){
+  const p=getProfile(role);
+  const icons=["🐦","🌙","🫖","📚","☕","🌸","🎀","🪽","🕊️","⭐","🐈","🌿","🎧","🧸","🍀"];
+  show(`
+    <h3>${role==="cast"?"キャスト":"利用者"}プロフィール編集</h3>
+    <div class="profile-head"><div class="profile-avatar" id="profilePreview">${profileAvatar(role)}</div><div><strong>${esc(p.name||"")}</strong><div class="meta">公開プロフィール</div></div></div>
+    <div class="field"><label>ニックネーム</label><input id="pfName" value="${esc(p.name||"")}" maxlength="20"></div>
+    ${role==="cast"?`<div class="field"><label>公開する性別（任意）</label><select id="pfGender">${genderOptions(p.gender||"非公開")}</select><div class="meta">性別による登録・報酬・機能の制限はありません。</div></div>`:""}<div class="field"><label>ひとこと</label><textarea id="pfBio">${esc(p.bio||"")}</textarea></div>
+    <div class="field"><label>興味がある分野・趣味</label><input id="pfHobbies" value="${esc(p.hobbies||"")}" placeholder="ゲーム / 読書 / 映画"></div>
+    <div class="field">
+      <label>基本の時間帯</label>
+      <div class="tags" id="activeSlotPicker">
+        ${["早朝","朝","昼","夕方","夜","深夜","平日","土日"].map(slot=>`<button type="button" class="tag ${Array.isArray(p.activeSlots)&&p.activeSlots.includes(slot)?"active-slot":""}" onclick="toggleActiveSlot(this,'${slot}')">${slot}</button>`).join("")}
+      </div>
+      <div class="meta" style="margin-top:5px">複数選択できます</div>
+    </div>
+    ${role==="user"?`<div class="profile-grid">
+      <div class="field"><label>お酒</label><select id="pfAlcohol"><option>飲まない</option><option>たまに飲む</option><option>飲む</option></select></div>
+      <div class="field"><label>タバコ</label><select id="pfSmoking"><option>吸わない</option><option>たまに吸う</option><option>吸う</option></select></div>
+      <div class="field"><label>ギャンブル</label><select id="pfGambling"><option>しない</option><option>たまにする</option><option>する</option></select></div>
+    </div>`:""}
+    <div class="field"><label>自由記入</label><textarea id="pfFree">${esc(p.free||"")}</textarea></div>
+    <div class="field"><label>コトリエの基本アイコン</label><div class="icon-picker">${icons.map(icon=>`<button type="button" class="icon-choice ${!p.image&&p.icon===icon?"active":""}" onclick="chooseProfileIcon('${role}','${icon}',this)">${icon}</button>`).join("")}</div></div>
+    <div class="field upload-box"><label>自分の画像から選ぶ</label><input id="pfImage" type="file" accept="image/jpeg,image/png,image/webp"><div class="safety-note">アダルト・過度な露出・性的な画像は公開不可。本番ではアップロード後に画像審査を通してから公開する設計にします。</div></div>
+    <div class="row"><button class="btn" onclick="saveProfile('${role}')">保存</button><button class="btn alt" onclick="closeM()">閉じる</button></div>
+  `);
+  if(role==="user"){
+    document.querySelector('#pfAlcohol').value=p.alcohol||"飲まない";
+    document.querySelector('#pfSmoking').value=p.smoking||"吸わない";
+    document.querySelector('#pfGambling').value=p.gambling||"しない";
+  }
+  const input=document.querySelector('#pfImage');
+  if(input) input.onchange=e=>{
+    const file=e.target.files?.[0]; if(!file) return;
+    if(file.size>5*1024*1024){alert('画像は5MB以下にしてください');input.value='';return;}
+    const reader=new FileReader();
+    reader.onload=()=>{p.image=reader.result;p.icon=p.icon||"🐦";document.querySelector('#profilePreview').innerHTML=`<img src="${reader.result}" alt="プロフィール画像">`;document.querySelectorAll('.icon-choice').forEach(x=>x.classList.remove('active'));};
+    reader.readAsDataURL(file);
+  };
+}
+function chooseProfileIcon(role,icon,el){
+  const p=getProfile(role);p.icon=icon;p.image="";
+  document.querySelector('#profilePreview').textContent=icon;
+  document.querySelectorAll('.icon-choice').forEach(x=>x.classList.remove('active'));el.classList.add('active');
+}
+
+function toggleActiveSlot(el,slot){
+  el.classList.toggle("active-slot");
+}
+function saveProfile(role){
+  const p=getProfile(role);
+  p.name=document.querySelector('#pfName')?.value.trim()||p.name;
+  if(role==="cast")p.gender=document.querySelector("#pfGender")?.value||"非公開";
+  p.bio=document.querySelector('#pfBio')?.value.trim()||"";
+  p.hobbies=document.querySelector('#pfHobbies')?.value.trim()||"";
+  p.activeSlots=[...document.querySelectorAll('#activeSlotPicker .active-slot')].map(el=>el.textContent.trim());
+  p.free=document.querySelector('#pfFree')?.value.trim()||"";
+  if(role==="user"){
+    p.alcohol=document.querySelector('#pfAlcohol')?.value||"飲まない";
+    p.smoking=document.querySelector('#pfSmoking')?.value||"吸わない";
+    p.gambling=document.querySelector('#pfGambling')?.value||"しない";
+  }
+  save();closeM();render();setTimeout(()=>{if(typeof window.syncCotorieProfile==="function"){window.syncCotorieProfile().catch(console.warn)}},0);
+}
+
+const PREFECTURES=["北海道","青森","岩手","宮城","秋田","山形","福島","茨城","栃木","群馬","埼玉","千葉","東京","神奈川","新潟","富山","石川","福井","山梨","長野","岐阜","静岡","愛知","三重","滋賀","京都","大阪","兵庫","奈良","和歌山","鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知","福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"];
+const HOBBY_CHOICES=["創作","ゲーム","読書","映画","アニメ","料理","猫","旅行","音楽","カフェ","美容","植物","散歩","紅茶","晩酌"];
+function randomOnlineCasts(){const list=casts.filter(c=>c.online).sort(()=>Math.random()-.5);const count=Math.min(list.length,4+Math.floor(Math.random()*2));return list.slice(0,count)}
+function spokenCasts(){return casts.filter((c,i)=>S.spokenWith.includes(i+1))}
+function liveKnownCasts(){return casts.filter((c,i)=>S.spokenWith.includes(i+1)&&c.status==="ラジオ中")}
+function markSpoken(i){const id=i+1;if(!S.spokenWith.includes(id))S.spokenWith.push(id);save()}
+function saveCastMemo(name){S.castNotes[name]=document.querySelector("#castMemo")?.value||"";save();alert("メモを保存しました")}
+function toggleCastMemo(){
+  document.querySelector("#memoDrawer")?.classList.toggle("hidden");
+}
+function openChat(i,role=S.role,source="casts") {
+  S.chatPeer=null;
+  if(source==="casts") markSpoken(i);
+  S.chatIndex=i;
+  S.chatRole=role;
+  S.chatSource=source;
+  S.page="chat";
+  closeM();
+  render();
+}
+
+function openCastChat(i){
+  openChat(i,"cast","users");
+}
+
+function closeChatPage(){
+  S.page="messages";
+  render();
+}
+
+function chatPage(){
+  const c=S.chatPeer ? peerDetails(S.chatPeer) : (S.chatRole==="cast" ? (DEMO_USERS[S.chatIndex] || DEMO_USERS[0]) : (casts[S.chatIndex] || casts[0]));
+  const avatar=c?.a||"🐦";
+  const name=c?.name||"お相手";
+  const online=c?.online!==false;
+
+  setTimeout(()=>loadChatMessages(),0);
+
+  return `<div class="chat-page">
+    <div class="chat-page-head">
+      <button class="chat-back" onclick="closeChatPage()">‹</button>
+      <div class="chat-person">
+        <div class="avatar">${esc(avatar)}</div>
+        <div>
+          <strong>${esc(name)}</strong>
+          <div class="meta">${online?"● オンライン":"オフライン"}</div>
+        </div>
+      </div>
+      <div id="chatStatus" class="chat-status">接続確認中・v50</div>
+    </div>
+
+    ${safetyChatNotice()}
+    <div id="chatLog" class="chat-page-log">
+      <div class="chat-empty">メッセージを読み込んでいます…</div>
+    </div>
+
+    ${S.chatRole==="cast" ? `
+      <div id="memoDrawer" class="memo-drawer chat-page-note hidden">
+        <strong>キャストメモ</strong>
+        <div class="meta">この相手についてのメモを残せます</div>
+        <textarea id="castMemo" placeholder="好きな話題・話した内容・次回聞きたいこと など">${esc(S.castNotes[peerAccountId()]||S.castNotes[name]||"")}</textarea>
+        <button class="btn alt full" style="margin-top:8px" onclick="saveCastMemo(peerAccountId())">メモ保存</button>
+      </div>` : ``}
+
+    <div id="stampPanel" class="stamp-panel hidden">
+      <div class="stamp-grid">
+        ${COTORIE_STAMPS.map(s=>`<button type="button" class="stamp-item" onclick="sendStamp('${s.id}')"><span class="stamp-emoji">${s.emoji}</span><span class="stamp-label">${s.label}</span></button>`).join("")}
+      </div>
+    </div>
+    <div class="chat-page-compose">
+      ${S.chatRole==="cast" ? `<button type="button" class="memo-mini-btn" onclick="toggleCastMemo()" title="キャストメモ">📝</button>` : ``}
+      <button type="button" class="stamp-btn" onclick="toggleStampPanel()" title="スタンプ">😊</button>
+      <textarea id="chatInput" placeholder="メッセージを入力" onkeydown="if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();sendChatMessage()}"></textarea>
+      <button class="btn chat-send" onclick="sendChatMessage()">送信</button>
+    </div>
+  </div>`;
+}
+
+function openUserFilter(){
+ show(`<h3>さらに絞り込む</h3><div class="field"><label>キャストの性別</label><select id="filterGender">${genderOptions("",true)}</select></div><div class="field"><label>都道府県</label><select id="filterPref"><option value="">指定なし</option>${PREFECTURES.map(p=>`<option>${p}</option>`).join("")}</select></div>
+ <div class="field"><label>趣味・興味（複数選択）</label><div class="choice-wrap">${HOBBY_CHOICES.map(h=>`<button type="button" class="choice-chip" onclick="this.classList.toggle('active')">${h}</button>`).join("")}</div></div>
+ <div class="field"><label>状態</label><select id="filterStatus"><option value="">すべて</option><option value="online">オンラインのみ</option><option value="radio">ラジオ中</option></select></div>
+ <button class="btn full" onclick="applySearchFilter()">この条件で検索</button>`)
+}
+function toggleAvailable(){
+  S.available=!S.available;
+  save();
+  render();
+}
+
+function quickSearch(){
+ const pref=document.querySelector("#quickPref")?.value||"",status=document.querySelector("#quickStatus")?.value||"",gender=document.querySelector("#quickGender")?.value||"";
+ const q=(document.querySelector("#searchInput")?.value||"").trim().toLowerCase();
+ const hobbies=[...document.querySelectorAll("#searchResultsFilters .choice-chip.active")].map(x=>x.textContent.trim());
+ const rs=casts.filter(c=>(!pref||c.area===pref)&&(!gender||(c.gender||"非公開")===gender)&&(!status||(status==="online"?c.online:c.status==="ラジオ中"))&&(!hobbies.length||hobbies.some(x=>c.tags.includes(x)))&&(!q||[c.name,c.bio,c.area,...c.tags].join(" ").toLowerCase().includes(q)));
+ const host=document.querySelector("#searchResults");if(host)host.innerHTML=rs.length?rs.map(c=>card(c,casts.indexOf(c))).join(""):`<div class="notice">条件に合う相手が見つかりませんでした。</div>`;
+}
+function applySearchFilter(){
+ const pref=document.querySelector("#filterPref")?.value||"",status=document.querySelector("#filterStatus")?.value||"",gender=document.querySelector("#filterGender")?.value||"";
+ const hobbies=[...document.querySelectorAll("#modal .choice-chip.active")].map(x=>x.textContent.trim());
+ closeM();go("search");
+ document.querySelector("#quickPref").value=pref;document.querySelector("#quickStatus").value=status;document.querySelector("#quickGender").value=gender;
+ document.querySelectorAll("#searchResultsFilters .choice-chip").forEach(x=>x.classList.toggle("active",hobbies.includes(x.textContent.trim())));quickSearch();
+}
+function showMessageTab(tab){document.querySelector("#talkList")?.classList.toggle("hidden",tab!=="talk");document.querySelector("#historyList")?.classList.toggle("hidden",tab!=="history");document.querySelector("#talkTab")?.classList.toggle("active",tab==="talk");document.querySelector("#historyTab")?.classList.toggle("active",tab==="history")}
+function userHome(){const onlineList=randomOnlineCasts();const liveKnown=liveKnownCasts();return `
+<section class="hero"><h1>こんにちは、${esc(getProfile("user").name||"ことり")}さん 🐦</h1><p>話したい気分に合う相手を、ゆっくり探してみよう。</p></section>
+<div class="points"><div><div class="label">保有ポイント</div><strong>${S.points}pt</strong></div><button class="btn secondary" onclick="charge()">ポイント追加</button></div>
+<div class="discover-head"><h2>おはなしできます</h2><button class="filter-link" onclick="openUserFilter()">さらに絞り込む</button></div>${onlineList.map(c=>card(c,casts.indexOf(c))).join("")}
+<div class="section-title"><h2>ただいま配信中</h2></div>${liveKnown.length?liveKnown.map(c=>`<div class="card radio-card"><div class="row space"><div class="row"><div class="avatar">${c.a}</div><div><strong>${c.name}のラジオ</strong><div class="meta">以前おはなししたことがあります</div></div></div><span class="pill pink">LIVE</span></div><button class="btn full" style="margin-top:10px" data-action="listen">聴いてみる</button></div>`).join(""):`<div class="notice">いま、以前おはなししたことのある相手の配信はありません。</div>`}` }
+function userSearch(){return `
+<div class="section-title"><h2>お話し相手を探す</h2><button class="filter-link" onclick="openUserFilter()">条件を選ぶ</button></div>
+<div class="searchbar"><input id="searchInput" placeholder="名前・趣味・キーワード" oninput="quickSearch()"><button class="btn" onclick="quickSearch()">検索</button></div>
+<div class="card" id="searchResultsFilters"><div class="field"><label>キャストの性別</label><select id="quickGender" onchange="quickSearch()">${genderOptions("",true)}</select></div><div class="select-grid"><div class="field"><label>都道府県</label><select id="quickPref" onchange="quickSearch()"><option value="">指定なし</option>${PREFECTURES.map(p=>`<option>${p}</option>`).join("")}</select></div><div class="field"><label>状態</label><select id="quickStatus" onchange="quickSearch()"><option value="">すべて</option><option value="online">オンライン</option><option value="radio">ラジオ中</option></select></div></div>
+<div class="field"><label>趣味（複数選択）</label><div class="choice-wrap">${HOBBY_CHOICES.map(h=>`<button type="button" class="choice-chip" onclick="this.classList.toggle('active');quickSearch()">${h}</button>`).join("")}</div></div></div><div id="searchResults">${casts.map(c=>card(c,casts.indexOf(c))).join("")}</div>`}
+
+let messageListCache={};
+let listRequest=0;
+function peerDetails(id){
+ const name=id.slice(id.indexOf(":")+1);
+ const people=id.startsWith("cast:")?casts:DEMO_USERS;
+ return people.find(p=>p.name===name)||{name,a:"🐦",online:false};
+}
+function openRealChat(id){
+ S.chatPeer=id; S.chatRole=S.role; S.page="chat"; closeM(); render();
+}
+function drawMessageList(){
+ const host=document.querySelector("#talkList"); if(!host||S.page!=="messages")return;
+ const ids=Object.keys(messageListCache);
+ host.innerHTML=ids.length?ids.map((id,i)=>{
+ const p=peerDetails(id),m=messageListCache[id];
+ return `<div class="msg-row" data-peer-index="${i}" role="button" tabindex="0"><div class="avatar">${esc(p.a)}</div><div class="msg-main"><div class="msg-name">${esc(p.name)}</div><div class="msg-preview">${esc(m.message_type==="stamp"?"スタンプ":m.body)}</div><div class="msg-meta">${formatListTime(m.created_at)}</div></div></div>`;
+ }).join(""):`<div class="notice">まだトークはありません。</div>`;
+ host.querySelectorAll("[data-peer-index]").forEach(el=>{el.onclick=()=>openRealChat(ids[Number(el.dataset.peerIndex)]);el.onkeydown=e=>{if(e.key==="Enter")el.click()}});
+}
+async function loadMessageList(){
+ const client=ensureChatClient(), me=currentAccountId(), req=++listRequest;
+ if(!client){if(S.page==="messages")document.querySelector("#talkList").textContent="会話機能を設定してください。";return;}
+ try{
+ const fields="id,thread_id,sender_id,receiver_id,body,message_type,stamp_id,created_at";
+ const results=await Promise.all(["sender_id","receiver_id"].map(col=>client.from("cotorie_messages").select(fields).eq(col,me).order("created_at",{ascending:false})));
+ for(const r of results)if(r.error)throw r.error;
+ if(req!==listRequest||me!==currentAccountId())return;
+ const rows=results.flatMap(r=>r.data||[]).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)||Number(b.id)-Number(a.id));
+ const latest=Object.create(null);
+ for(const m of rows){const peer=m.sender_id===me?m.receiver_id:m.sender_id;if(peer.startsWith(S.role==="cast"?"user:":"cast:")&&!latest[peer])latest[peer]=m;}
+ messageListCache=latest; drawMessageList();
+ }catch(e){const host=document.querySelector("#talkList");if(host&&req===listRequest)host.textContent="読み込み失敗："+(e.message||e);}
+}
+function formatListTime(ts){
+  try{
+    const d=new Date(ts);
+    const now=new Date();
+    if(d.toDateString()===now.toDateString()){
+      return d.toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
+    }
+    const y=new Date(now);
+    y.setDate(now.getDate()-1);
+    if(d.toDateString()===y.toDateString()) return "昨日";
+    return `${d.getMonth()+1}/${d.getDate()}`;
+  }catch(e){
+    return "";
+  }
+}
+
+function userMessages(){
+ const known=spokenCasts(); setTimeout(loadMessageList,0);
+ return `<div class="section-title"><h2>メッセージ</h2></div><div class="section-tabs"><button id="talkTab" class="active" onclick="showMessageTab('talk')">トーク</button><button id="historyTab" onclick="showMessageTab('history')">履歴</button></div><div id="talkList" class="msg-list">読み込み中…</div><div id="historyList" class="msg-list hidden">${known.map(c=>`<div class="msg-row" onclick="openChat(${casts.indexOf(c)},'user')"><div class="avatar">${esc(c.a)}</div><div class="msg-main">${esc(c.name)}</div></div>`).join("")||"まだ履歴はありません。"}</div>`;
+}
+
+function atameProfile(name){
+  const p=ATAME_PEOPLE.find(x=>x.name===name);
+  if(!p) return;
+  show(`<div class="profile-head">
+    <button class="atame-avatar-btn" onclick="atameProfile('${esc(p.name)}')"><div class="avatar">${p.a}</div></button>
+    <div>
+      <h3 style="margin:0">${esc(p.name)}</h3>
+      <div class="meta">${p.online?"● オンライン":"オフライン"}${p.newUser?" ・ NEW":""}</div>
+    </div>
+  </div>
+  <div class="tags" style="margin-top:12px">${p.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+  <div class="notice" style="margin-top:10px">最終ログイン ${formatLast(p.lastMin)}</div>
+  <button class="btn full" style="margin-top:12px" onclick="closeM()">閉じる</button>`);
+}
+
+function castHomeAtameList(){
+  const current=atameTemplates[S.atameTemplate] || atameTemplates[0];
+  const list=ATAME_PEOPLE
+    .filter(p=>!S.atameSent[p.name])
+    .sort((a,b)=>(b.online-a.online)||(a.lastMin-b.lastMin))
+    .slice(0,4);
+
+  return `
+    <div class="card">
+      <div class="row space">
+        <div style="flex:1">
+          <div class="meta">テンプレート</div>
+          <strong>${esc(current.name)}</strong>
+          <div class="meta" style="margin-top:4px">${esc(current.body).slice(0,42)}${current.body.length>42?"…":""}</div>
+        </div>
+        <button class="btn alt" onclick="templateManager()">変更</button>
+      </div>
+    </div>
+
+    <div class="section" style="display:flex;justify-content:space-between;align-items:center">
+      <span>すぐ送れる人</span>
+      <button class="btn alt" style="min-height:36px;padding:7px 10px" onclick="go('search')">絞り込み</button>
+    </div>
+
+    <div id="homeAtameList">
+      ${list.length ? list.map(p=>`
+        <div class="card atame-user" data-atame-user="${esc(p.name)}">
+          <div class="row space">
+            <div class="row">
+              <button class="atame-avatar-btn" onclick="atameProfile('${esc(p.name)}')"><div class="avatar">${p.a}</div></button>
+              <div>
+                <div class="atame-name-line">
+                  <strong>${esc(p.name)}</strong>
+                  <div class="atame-inline-tags">${p.tags.slice(0,3).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+                </div>
+                <div class="meta">最終ログイン ${formatLast(p.lastMin)}</div>
+                <div class="meta">${p.online ? "● オンライン" : "オフライン"}${p.newUser ? " ・ NEW" : ""}</div>
+              </div>
+            </div>
+            <button class="btn" onclick="sendAtame('${esc(p.name)}')">送信</button>
+          </div>
+        </div>
+      `).join("") : `
+        <div class="card" style="text-align:center">
+          <div style="font-size:30px">🪽</div>
+          <strong>今すぐ送れる人はいません</strong>
+          <p>全員に送信済み、または条件に合うユーザーがいない状態です。</p>
+        </div>`}
+    </div>
+  `;
+}
+function castHome(){return `
+  <div class="card">
+    <div class="meta">今月の報酬</div>
+    <div class="stat">${S.earn}円</div>
+    <p>あと${Math.max(0,1200-S.earn)}円で換金できます</p>
+    <div class="bar"><div style="width:${Math.min(100,S.earn/12)}%"></div></div>
+  </div>
+
+  <div class="grid2home">
+    <button onclick="go('radio')"><span>🎙️</span>配信する</button>
+    <button onclick="go('messages')"><span>✉️</span>返信する</button>
+  </div>
+
+  <div class="card">
+    <div class="row space">
+      <div>
+        <strong>今おはなしできます</strong>
+        <p>${S.available ? "プロフィールに「今おはなしできます」と表示中" : "現在は非表示です"}</p>
+      </div>
+      <button class="btn ${S.available ? "soft" : "alt"}" onclick="toggleAvailable()">${S.available ? "ON" : "OFF"}</button>
+    </div>
+  </div>
+
+  ${castHomeAtameList()}
+` }
+function castSearch(){
+  const people=ATAME_PEOPLE;
+  const current=atameTemplates[S.atameTemplate] || atameTemplates[0];
+  const remaining=people.filter(p=>!S.atameSent[p.name]).length;
+
+  return `
+    <div class="section">アタメを送る <span class="meta">残り ${remaining} 人</span></div>
+
+    <div class="card">
+      <div class="row space">
+        <div style="flex:1">
+          <div class="meta">今使うテンプレート</div>
+          <strong>${esc(current.name)}</strong>
+          <div class="meta" style="margin-top:5px">${esc(current.body).slice(0,58)}${current.body.length>58?"…":""}</div>
+        </div>
+        <button class="btn alt" onclick="templateManager()">テンプレート</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field" style="margin-top:0">
+        <label>絞り込み</label>
+        <div class="row" style="flex-wrap:wrap">
+          <select id="atameStatus" onchange="applyAtameFilters()">
+            <option value="all">すべて</option>
+            <option value="online">オンライン</option>
+            <option value="new">新規ユーザー</option>
+          </select>
+          <select id="atameArea" onchange="applyAtameFilters()">
+            <option value="all">地域：すべて</option>
+            <option>東京</option>
+            <option>神奈川</option>
+            <option>千葉</option>
+            <option>埼玉</option>
+          </select>
+          <select id="atameTag" onchange="applyAtameFilters()">
+            <option value="all">趣味：すべて</option>
+            <option>ゲーム</option>
+            <option>アニメ</option>
+            <option>読書</option>
+            <option>映画</option>
+            <option>カフェ</option>
+            <option>旅行</option>
+            <option>猫</option>
+          </select>
+          <select id="atameSort" onchange="applyAtameFilters()">
+            <option value="login">最終ログイン順</option>
+            <option value="online">オンライン優先</option>
+            <option value="ageAsc">年齢が若い順</option>
+            <option value="ageDesc">年齢が高い順</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice" style="margin-bottom:12px">
+      「アタメ送信」を押すと即送信され、そのユーザーは一覧から消えます。次のユーザーが同じ位置に詰まるので、同じ場所をぽちぽち押して連続送信できます。
+    </div>
+
+    <div id="atameList"></div>
+
+    <div id="atameDone" class="card hidden" style="text-align:center">
+      <div style="font-size:34px">🪽</div>
+      <h3>表示できるユーザーがいません</h3>
+      <p>条件を変えるか、新しいユーザーを待ってね。</p>
+    </div>
+`;
+}
+function castMessages(){setTimeout(loadMessageList,0);return `<div class="section-title"><h2>メッセージ</h2></div><div id="talkList" class="msg-list">読み込み中…</div>`;}
+
+let radioLocalStream=null;
+let radioSignalChannel=null;
+let radioHostPeers={};
+let radioListenerPeer=null;
+let radioCurrentRoomId=null;
+
+
+let radioDraftCoverDataUrl="";
+let radioListenerId=null;
+let radioListenerJoinedAt=0;
+let radioHostStats={startedAt:0,currentListeners:{},totalPaidPoints:0,totalListenerMinutes:0};
+
+function getRadioDraft(){
+  return {
+    title:(document.querySelector("#radioTitle")?.value||"").trim()||"眠れない人の夜更かし雑談",
+    overlay:(document.querySelector("#radioOverlay")?.value||"").trim()||"今夜のことば",
+    description:(document.querySelector("#radioDescription")?.value||"").trim()||"まったり話します。",
+    tags:[...document.querySelectorAll("#castRadioTags .radio-tag.active")].map(x=>x.textContent.trim()).slice(0,5),
+    cover:radioDraftCoverDataUrl||""
+  };
+}
+
+function radioFallbackIcon(){
+  const p=getProfile("cast");
+  return (p&&p.icon)||"🐦";
+}
+
+function renderRadioPreview(){
+  const host=document.querySelector("#radioPreview");
+  if(!host) return;
+
+  const draft=getRadioDraft();
+  const tags=(draft.tags||[]).map(t=>`<span class="tag">${escapeHtmlText(t)}</span>`).join("");
+  const hasImage=!!draft.cover;
+
+  host.innerHTML=`
+    <div class="radio-cover-card">
+      <div class="radio-cover ${hasImage?'has-image':''}" ${hasImage?`style="background-image:url('${draft.cover.replace(/'/g,"%27")}')"`:''}>
+        ${!hasImage?`<div class="radio-cover-emptyicon">${escapeHtmlText(radioFallbackIcon())}</div>`:""}
+        <div class="radio-cover-inner">
+          <div class="radio-cover-badge">● LIVE予定</div>
+          <div class="radio-cover-title">${escapeHtmlText(draft.overlay||draft.title)}</div>
+          <div class="tags" style="margin-top:8px">${tags}</div>
+        </div>
+      </div>
+      <div class="radio-cover-desc">
+        <strong>${escapeHtmlText(draft.title)}</strong><br>
+        ${escapeHtmlText(draft.description||"配信内容の説明は未入力です。")}
+      </div>
+    </div>
+    <div class="radio-preview-note">画像がない場合は、キャストのアイコンを使って表示されます。</div>
+  `;
+}
+
+function onRadioCoverSelected(input){
+  const file=input?.files?.[0];
+  if(!file){
+    radioDraftCoverDataUrl="";
+    renderRadioPreview();
+    return;
+  }
+  const reader=new FileReader();
+  reader.onload=()=>{
+    radioDraftCoverDataUrl=String(reader.result||"");
+    renderRadioPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+
+let radioCommentsCache=[];
+let radioCommentsChannel=null;
+
+function currentListenerDisplayName(){
+  const p=getProfile("user");
+  return (p&&p.name)||"利用者";
+}
+
+function currentCastDisplayName(){
+  const p=getProfile("cast");
+  return (p&&p.name)||"キャスト";
+}
+
+function escapeAttr(s){
+  return String(s||"").replace(/"/g,"&quot;");
+}
+
+function liveCoverStyle(cover){
+  return cover ? `style="background-image:url('${String(cover).replace(/'/g,"%27")}')"` : "";
+}
+
+function roomFallbackCoverIcon(){
+  return escapeHtmlText(radioFallbackIcon());
+}
+
+function roomActivityText(room){
+  return room?.activity_text || room?.cover_text || "のんびり配信中";
+}
+
+function liveCommentsHtml(limit=4){
+  const items=(radioCommentsCache||[]).slice(-limit);
+  if(!items.length){
+    return `<div class="live-empty-comments">まだコメントはありません</div>`;
+  }
+
+  return items.map(c=>{
+    if(c.sender_role==="cast"){
+      return `
+        <div class="live-comment-bubble cast">
+          <div class="live-comment-line">${escapeHtmlText(c.body||"")}</div>
+        </div>`;
+    }
+
+    return `
+      <div class="live-comment-bubble">
+        <div class="live-comment-line"><span class="viewer-name">${escapeHtmlText(c.display_name||"リスナー")}：</span>${escapeHtmlText(c.body||"")}</div>
+      </div>`;
+  }).join("");
+}
+
+
+function castChatLogHtml(){
+  const items=(radioCommentsCache||[]).filter(c=>c.sender_role==="cast").slice(-20);
+  if(!items.length){
+    return `<div class="cast-chat-empty">まだキャストチャットはありません</div>`;
+  }
+  return items.map(c=>`
+    <div class="cast-chat-row">
+      <div class="cast-chat-bubble">${escapeHtmlText(c.body||"")}</div>
+    </div>
+  `).join("");
+}
+
+function updateCastChatLogUI(){
+  const host=document.querySelector("#castChatLog");
+  if(host){
+    host.innerHTML=castChatLogHtml();
+    host.scrollTop=host.scrollHeight;
+  }
+}
+
+function listenerCommentsHtml(){
+  const items=(radioCommentsCache||[]);
+  if(!items.length) return `<div class="notice">まだコメントはありません。</div>`;
+
+  return `<div class="listener-chat-log">` + items.map(c=>{
+    if(c.sender_role==="cast"){
+      return `
+        <div class="listener-chat-item cast">
+          <div class="listener-chat-line">${escapeHtmlText(c.body||"")}</div>
+        </div>`;
+    }
+
+    return `
+      <div class="listener-chat-item">
+        <div class="listener-chat-line"><span class="viewer-name">${escapeHtmlText(c.display_name||"リスナー")}：</span>${escapeHtmlText(c.body||"")}</div>
+      </div>`;
+  }).join("") + `</div>`;
+}
+
+async function loadRadioComments(roomId){
+  const client=radioClient();
+  if(!client || !roomId) return [];
+  const {data,error}=await client
+    .from("cotorie_radio_comments")
+    .select("id,room_id,sender_role,display_name,body,created_at")
+    .eq("room_id",roomId)
+    .order("created_at",{ascending:true})
+    .limit(200);
+
+  if(error){
+    console.error("loadRadioComments:", error);
+    return [];
+  }
+  radioCommentsCache=data||[];
+  updateLiveCommentsUI();
+  updateListenerCommentsUI();
+  return radioCommentsCache;
+}
+
+function updateLiveCommentsUI(){
+  const host=document.querySelector("#liveCommentOverlay")||document.querySelector("#listenerLiveCommentOverlay");
+  if(host) host.innerHTML=liveCommentsHtml();
+  updateCastChatLogUI();
+}
+
+function updateListenerCommentsUI(){
+  const host=document.querySelector("#listenerCommentsWrap");
+  if(host) host.innerHTML=listenerCommentsHtml();
+  updateCastChatLogUI();
+}
+
+function subscribeRadioComments(roomId){
+  const client=radioClient();
+  if(!client || !roomId) return;
+
+  if(radioCommentsChannel){
+    try{client.removeChannel(radioCommentsChannel)}catch(e){}
+    radioCommentsChannel=null;
+  }
+
+  radioCommentsChannel=client.channel("radio-comments:"+roomId)
+    .on("postgres_changes",{
+      event:"INSERT",
+      schema:"public",
+      table:"cotorie_radio_comments",
+      filter:`room_id=eq.${roomId}`
+    }, payload=>{
+      const row=payload.new;
+      if(row && !radioCommentsCache.some(x=>x.id===row.id)){
+        radioCommentsCache=[...radioCommentsCache,row].slice(-50);
+        updateLiveCommentsUI();
+        updateListenerCommentsUI();
+      }
+    })
+    .subscribe(status=>{
+      if(status==="SUBSCRIBED"){
+        loadRadioComments(roomId);
+      }
+    });
+}
+
+async function sendRadioComment(body,senderRole,displayName){
+  const client=radioClient();
+  if(!client || !radioCurrentRoomId || !body.trim()) return null;
+
+  const {data,error}=await client
+    .from("cotorie_radio_comments")
+    .insert({
+      room_id:radioCurrentRoomId,
+      sender_role:senderRole,
+      display_name:displayName,
+      body:body.trim()
+    })
+    .select("id,room_id,sender_role,display_name,body,created_at")
+    .single();
+
+  if(error){
+    console.error("sendRadioComment:", error);
+    alert("コメント送信に失敗しました: " + error.message);
+    return null;
+  }
+
+  if(data && !radioCommentsCache.some(x=>x.id===data.id)){
+    radioCommentsCache=[...radioCommentsCache,data].slice(-50);
+    updateLiveCommentsUI();
+    updateListenerCommentsUI();
+  }
+
+  return data;
+}
+
+async function sendListenerComment(){
+  const input=document.querySelector("#listenerCommentInput");
+  const body=(input?.value||"").trim();
+  if(!body) return;
+  await sendRadioComment(body,"listener",currentListenerDisplayName());
+  if(input) input.value="";
+}
+
+async function sendCastRadioChat(){
+  const input=document.querySelector("#castRadioChatInput");
+  const body=(input?.value||"").trim();
+  if(!body) return;
+
+  const sent=await sendRadioComment(body,"cast",currentCastDisplayName());
+  if(sent){
+    if(input) input.value="";
+    updateLiveCommentsUI();
+    updateCastChatLogUI();
+  }
+}
+
+async function toggleRadioMute(){
+  if(!radioLocalStream) return;
+  const nextMuted = !S.radioMuted;
+  radioLocalStream.getAudioTracks().forEach(t=>t.enabled=!nextMuted);
+  S.radioMuted=nextMuted;
+  render();
+}
+
+async function saveLiveActivityText(){
+  const client=radioClient();
+  if(!client || !radioCurrentRoomId) return;
+  const activity=(document.querySelector("#liveActivityInput")?.value||"").trim();
+  const desc=(document.querySelector("#liveDescriptionInput")?.value||"").trim();
+  const {error}=await client.from("cotorie_radio_rooms").update({
+    activity_text:activity,
+    description:desc
+  }).eq("room_id",radioCurrentRoomId);
+  if(error){
+    alert("配信情報の更新に失敗しました: " + error.message);
+    return;
+  }
+  if(S.radioLiveMeta){
+    S.radioLiveMeta.activity_text=activity;
+    S.radioLiveMeta.description=desc;
+  }
+  render();
+}
+
+function makeLiveRoomCard(room, isHosting=false){
+  const hasImage=!!room?.cover_image_url;
+  const tags=Array.isArray(room?.tags)?room.tags:[];
+  return `
+    <div class="live-stage">
+      <div class="live-stage-cover ${hasImage?'has-image':''}" ${hasImage?liveCoverStyle(room.cover_image_url):''}>
+        <div class="live-stage-inner">
+          <div>
+            <div class="live-header-badges">
+              <span class="live-badge">● LIVE</span>
+              <span class="live-badge">${escapeHtmlText(room?.cast_name || currentCastDisplayName())}</span>
+            </div>
+            ${!hasImage?`<div class="radio-cover-emptyicon" style="position:absolute;right:20px;top:18px;z-index:1;font-size:60px">${roomFallbackCoverIcon()}</div>`:''}
+          </div>
+          <div>
+            <div class="live-stage-title">${escapeHtmlText(room?.cover_text || room?.title || "配信中")}</div>
+            <div class="live-stage-desc">${escapeHtmlText(room?.description || "のんびり配信しています。")}</div>
+            <div class="tags" style="margin-top:8px">${tags.map(t=>`<span class="tag">${escapeHtmlText(t)}</span>`).join("")}</div>
+            <div class="live-activity-box" style="margin-top:12px">${escapeHtmlText(roomActivityText(room))}</div>
+          </div>
+        </div>
+        <div id="${isHosting?'liveCommentOverlay':'listenerLiveCommentOverlay'}" class="live-comment-overlay">${liveCommentsHtml()}</div>
+      </div>
+    </div>
+  `;
+}
+
+function getLastRadioSummary(){
+  try{
+    return JSON.parse(localStorage.getItem("cotorie_last_radio_summary")||"null");
+  }catch(e){
+    return null;
+  }
+}
+
+function setLastRadioSummary(summary){
+  localStorage.setItem("cotorie_last_radio_summary",JSON.stringify(summary));
+}
+
+function computeEarnedPointsFromSeconds(sec){
+  const minutes=Math.ceil(sec/60);
+  return Math.max(0, minutes-3)*2;
+}
+
+
+function radioClient(){
+  return ensureChatClient();
+}
+
+function makeRoomId(){
+  return "room_"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
+}
+
+function rtcConfig(){
+  return {iceServers:[{urls:"stun:stun.l.google.com:19302"}]};
+}
+
+async function createRadioRoom(){
+  if(!radioSafetyReady()){alert("配信前の注意事項にすべて同意してください");return;}
+  const client=radioClient();
+  if(!client){openChatSetup();return;}
+
+  const draft=getRadioDraft();
+  if((draft.tags||[]).length>5){
+    alert("タグは5つまでです。");
+    return;
+  }
+
+  try{
+    radioLocalStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+  }catch(err){
+    alert("マイクを使用できません。ブラウザのマイク許可を確認してください。");
+    return;
+  }
+
+  radioCurrentRoomId=makeRoomId();
+  radioHostStats={startedAt:Date.now(),currentListeners:{},totalPaidPoints:0,totalListenerMinutes:0};
+
+  const p=getProfile("cast");
+  const room={
+    room_id:radioCurrentRoomId,
+    cast_account_id:currentAccountId(),
+    cast_name:p?.name||"キャスト",
+    title:draft.title,
+    tags:draft.tags,
+    description:draft.description,
+    cover_image_url:draft.cover||null,
+    cover_text:draft.overlay||"",
+    activity_text:draft.overlay||"",
+    active:true,
+    started_at:new Date().toISOString()
+  };
+
+  const {error}=await client.from("cotorie_radio_rooms").insert(room);
+  if(error){
+    console.error(error);
+    radioLocalStream.getTracks().forEach(t=>t.stop());
+    radioLocalStream=null;
+    alert("配信を開始できませんでした："+error.message);
+    return;
+  }
+
+  startRadioHostSignaling(radioCurrentRoomId);
+  radioCommentsCache=[];
+  subscribeRadioComments(radioCurrentRoomId);
+  S.radioHosting=true;
+  S.radioRoomId=radioCurrentRoomId;
+  S.radioMuted=false;
+  S.radioLiveMeta=room;
+  render();
+}
+function startRadioHostSignaling(roomId){
+  const client=radioClient();
+  if(!client) return;
+
+  if(radioSignalChannel){
+    try{client.removeChannel(radioSignalChannel)}catch(e){}
+  }
+
+  radioSignalChannel=client.channel("radio:"+roomId);
+
+  radioSignalChannel
+    .on("broadcast",{event:"join"},async ({payload})=>{
+      const listenerId=payload.listener_id;
+      if(!listenerId || !radioLocalStream) return;
+
+      radioHostStats.currentListeners[listenerId]=Date.now();
+
+      const pc=new RTCPeerConnection(rtcConfig());
+      radioHostPeers[listenerId]=pc;
+      radioLocalStream.getTracks().forEach(track=>pc.addTrack(track,radioLocalStream));
+
+      pc.onicecandidate=e=>{
+        if(e.candidate){
+          radioSignalChannel.send({
+            type:"broadcast",
+            event:"host-ice",
+            payload:{to:listenerId,candidate:e.candidate}
+          });
+        }
+      };
+
+      const offer=await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      radioSignalChannel.send({
+        type:"broadcast",
+        event:"offer",
+        payload:{to:listenerId,sdp:offer}
+      });
+    })
+    .on("broadcast",{event:"leave"},async ({payload})=>{
+      const listenerId=payload.listener_id;
+      const joinedAt=radioHostStats.currentListeners[listenerId];
+      if(joinedAt){
+        const sec=Math.max(1, Math.round((Date.now()-joinedAt)/1000));
+        radioHostStats.totalListenerMinutes += Math.ceil(sec/60);
+        radioHostStats.totalPaidPoints += computeEarnedPointsFromSeconds(sec);
+        delete radioHostStats.currentListeners[listenerId];
+      }
+      const pc=radioHostPeers[listenerId];
+      if(pc){ try{pc.close()}catch(e){} delete radioHostPeers[listenerId]; }
+    })
+    .on("broadcast",{event:"answer"},async ({payload})=>{
+      const pc=radioHostPeers[payload.from];
+      if(pc && payload.sdp){
+        await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+      }
+    })
+    .on("broadcast",{event:"listener-ice"},async ({payload})=>{
+      const pc=radioHostPeers[payload.from];
+      if(pc && payload.candidate){
+        try{await pc.addIceCandidate(payload.candidate)}catch(e){console.warn(e)}
+      }
+    })
+    .subscribe();
+}
+async function stopRadioRoom(){
+  const client=radioClient();
+  const roomId=radioCurrentRoomId || S.radioRoomId;
+  const endTs=Date.now();
+
+  Object.entries(radioHostStats.currentListeners||{}).forEach(([listenerId,joinedAt])=>{
+    const sec=Math.max(1, Math.round((endTs-joinedAt)/1000));
+    radioHostStats.totalListenerMinutes += Math.ceil(sec/60);
+    radioHostStats.totalPaidPoints += computeEarnedPointsFromSeconds(sec);
+  });
+  radioHostStats.currentListeners={};
+
+  const durationMinutes=Math.max(1, Math.ceil((endTs-(radioHostStats.startedAt||endTs))/60000));
+  const earnedPt=radioHostStats.totalPaidPoints||0;
+
+  Object.values(radioHostPeers).forEach(pc=>{try{pc.close()}catch(e){}});
+  radioHostPeers={};
+
+  if(radioLocalStream){
+    radioLocalStream.getTracks().forEach(t=>t.stop());
+    radioLocalStream=null;
+  }
+
+  if(radioSignalChannel && client){
+    try{client.removeChannel(radioSignalChannel)}catch(e){}
+    radioSignalChannel=null;
+  }
+
+  if(client && roomId){
+    await client.from("cotorie_radio_rooms").update({
+      active:false,
+      ended_at:new Date().toISOString(),
+      duration_minutes:durationMinutes,
+      earned_pt:earnedPt
+    }).eq("room_id",roomId);
+  }
+
+  setLastRadioSummary({
+    roomId,
+    durationMinutes,
+    earnedPt,
+    endedAt:new Date().toISOString()
+  });
+
+  radioCurrentRoomId=null;
+  S.radioHosting=false;
+  S.radioRoomId="";
+  radioHostStats={startedAt:0,currentListeners:{},totalPaidPoints:0,totalListenerMinutes:0};
+  render();
+}
+async function fetchLiveRadioRooms(){
+  const client=radioClient();
+  if(!client) return [];
+  const {data,error}=await client
+    .from("cotorie_radio_rooms")
+    .select("room_id,cast_account_id,cast_name,title,tags,description,cover_image_url,cover_text,activity_text,started_at,active")
+    .eq("active",true)
+    .order("started_at",{ascending:false});
+  if(error){
+    console.error("radio rooms:",error);
+    return [];
+  }
+  return data||[];
+}
+async function refreshLiveRadioRooms(){
+  const host=document.querySelector("#liveRadioResults");
+  if(!host) return;
+
+  const rooms=await fetchLiveRadioRooms();
+  const q=(document.querySelector("#radioSearchInput")?.value||"").trim().toLowerCase();
+  const selected=[...document.querySelectorAll(".radio-tag.active")].map(x=>x.textContent.trim());
+
+  const filtered=rooms.filter(r=>{
+    const tags=Array.isArray(r.tags)?r.tags:[];
+    const text=((r.cast_name||"")+" "+(r.title||"")+" "+(r.description||"")+" "+tags.join(" ")).toLowerCase();
+    if(q && !text.includes(q)) return false;
+    if(selected.length && !selected.every(t=>tags.includes(t))) return false;
+    return true;
+  });
+
+  host.innerHTML=filtered.length ? filtered.map(r=>{
+    const tags=Array.isArray(r.tags)?r.tags:[];
+    const hasImage=!!r.cover_image_url;
+    return `<div class="radio-cover-card">
+      <div class="radio-cover ${hasImage?'has-image':''}" ${hasImage?`style="background-image:url('${String(r.cover_image_url).replace(/'/g,"%27")}')"`:''}>
+        ${!hasImage?`<div class="radio-cover-emptyicon">${escapeHtmlText(radioFallbackIcon())}</div>`:""}
+        <div class="radio-cover-inner">
+          <div class="radio-cover-badge">● LIVE</div>
+          <div class="radio-cover-title">${escapeHtmlText(r.cover_text||r.title||"配信中")}</div>
+          <div class="tags" style="margin-top:8px">${tags.map(t=>`<span class="tag">${escapeHtmlText(t)}</span>`).join("")}</div>
+        </div>
+      </div>
+      <div class="radio-cover-desc">
+        <strong>${escapeHtmlText(r.cast_name||"キャスト")}｜${escapeHtmlText(r.title||"配信中")}</strong><br>
+        ${escapeHtmlText(r.description||"配信内容の説明は未入力です。")}<br><span class="meta">いま：${escapeHtmlText(r.activity_text||r.cover_text||"配信中")}</span>
+        <button class="btn full" style="margin-top:12px" onclick="safetyJoin('${r.room_id}')">聴く</button>
+      </div>
+    </div>`;
+  }).join("") : `<div class="notice">条件に合う配信はありません。</div>`;
+}
+async function joinRadioRoom(roomId){
+  const client=radioClient();
+  if(!client){openChatSetup();return;}
+
+  leaveRadioRoom();
+
+  const rooms=await fetchLiveRadioRooms();
+  const room=rooms.find(r=>r.room_id===roomId) || {room_id:roomId,cast_name:"キャスト",title:"配信中",cover_text:"配信中",description:"",tags:[]};
+
+  radioListenerId="listener_"+Date.now()+"_"+Math.random().toString(36).slice(2,7);
+  radioListenerJoinedAt=Date.now();
+  radioCurrentRoomId=roomId;
+  radioListenerPeer=new RTCPeerConnection(rtcConfig());
+
+  const audio=document.querySelector("#radioAudio") || document.body.appendChild(Object.assign(document.createElement("audio"),{id:"radioAudio",autoplay:true}));
+  audio.autoplay=true;
+
+  radioListenerPeer.ontrack=e=>{
+    audio.srcObject=e.streams[0];
+    audio.play().catch(()=>{});
+    const status=document.querySelector("#radioListenStatus");
+    if(status) status.textContent="再生中";
+  };
+
+  radioSignalChannel=client.channel("radio:"+roomId);
+
+  radioListenerPeer.onicecandidate=e=>{
+    if(e.candidate){
+      radioSignalChannel.send({
+        type:"broadcast",
+        event:"listener-ice",
+        payload:{from:radioListenerId,candidate:e.candidate}
+      });
+    }
+  };
+
+  radioSignalChannel
+    .on("broadcast",{event:"offer"},async ({payload})=>{
+      if(payload.to!==radioListenerId) return;
+      await radioListenerPeer.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+      const answer=await radioListenerPeer.createAnswer();
+      await radioListenerPeer.setLocalDescription(answer);
+      radioSignalChannel.send({
+        type:"broadcast",
+        event:"answer",
+        payload:{from:radioListenerId,sdp:answer}
+      });
+    })
+    .on("broadcast",{event:"host-ice"},async ({payload})=>{
+      if(payload.to!==radioListenerId || !payload.candidate) return;
+      try{await radioListenerPeer.addIceCandidate(payload.candidate)}catch(e){console.warn(e)}
+    })
+    .subscribe(status=>{
+      if(status==="SUBSCRIBED"){
+        radioSignalChannel.send({
+          type:"broadcast",
+          event:"join",
+          payload:{listener_id:radioListenerId}
+        });
+      }
+    });
+
+  radioCommentsCache=[];
+  subscribeRadioComments(roomId);
+  await loadRadioComments(roomId);
+
+  show(`<h3>ラジオを再生中 🎧</h3>
+    <div id="radioListenStatus" class="connection-status wait">接続中…</div>
+    ${makeLiveRoomCard(room, false)}
+    <div class="listener-chat-panel">
+      <strong>コメント</strong>
+      <div id="listenerCommentsWrap">${listenerCommentsHtml()}</div>
+      <div class="listener-chat-input">
+        <input id="listenerCommentInput" placeholder="コメントを送る" onkeydown="if(event.key==='Enter'){event.preventDefault();sendListenerComment()}">
+        <button class="btn" onclick="sendListenerComment()">送信</button>
+      </div>
+    </div>
+    <button class="btn alt full" style="margin-top:10px" onclick="leaveRadioRoom();closeM()">聴くのをやめる</button>`);
+}function leaveRadioRoom(){
+  const client=radioClient();
+
+  if(radioSignalChannel && radioListenerId){
+    try{
+      radioSignalChannel.send({
+        type:"broadcast",
+        event:"leave",
+        payload:{listener_id:radioListenerId}
+      });
+    }catch(e){}
+  }
+
+  if(radioListenerPeer){
+    try{radioListenerPeer.close()}catch(e){}
+    radioListenerPeer=null;
+  }
+
+  if(radioSignalChannel && client){
+    try{client.removeChannel(radioSignalChannel)}catch(e){}
+    radioSignalChannel=null;
+  }
+  if(radioCommentsChannel && client){
+    try{client.removeChannel(radioCommentsChannel)}catch(e){}
+    radioCommentsChannel=null;
+  }
+
+  const audio=document.querySelector("#radioAudio");
+  if(audio){
+    try{audio.pause()}catch(e){}
+    audio.srcObject=null;
+  }
+
+  radioCurrentRoomId=null;
+  radioListenerId=null;
+  radioListenerJoinedAt=0;
+}
+const DEMO_RADIOS=[
+  {name:"あかり",title:"夜カフェ雑談",tags:["のんびり","まったり","雑談"],people:12,a:"🫖"},
+  {name:"ひな",title:"眠れない人の夜更かしラジオ",tags:["寝落ち","まったり","夜更かし"],people:8,a:"🌙"},
+  {name:"みお",title:"晩酌しながら音楽の話",tags:["飲酒","雑談"],people:5,a:"🎧"}
+];
+
+function radioCard(r){
+  return `<div class="card radio-card">
+    <div class="row space">
+      <div class="row">
+        <div class="avatar">${r.a}</div>
+        <div>
+          <strong>${esc(r.name)}の${esc(r.title)}</strong>
+          <div class="meta"><span class="live">● LIVE</span> ${r.people}人</div>
+        </div>
+      </div>
+    </div>
+    <div class="tags">${r.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+    <p>最初の3分無料。その後は2pt/分。</p>
+    <button class="btn full" onclick="listen()">聴いてみる</button>
+  </div>`;
+}
+
+function filterRadios(){
+  const q=(document.querySelector("#radioSearchInput")?.value||"").trim().toLowerCase();
+  const tags=[...document.querySelectorAll(".radio-tag.active")].map(x=>x.textContent.trim());
+  const rs=DEMO_RADIOS.filter(r=>{
+    const text=(r.name+" "+r.title+" "+r.tags.join(" ")).toLowerCase();
+    if(q && !text.includes(q)) return false;
+    if(tags.length && !tags.every(t=>r.tags.includes(t))) return false;
+    return true;
+  });
+  const host=document.querySelector("#radioResults");
+  if(host) host.innerHTML=rs.length ? rs.map(r=>radioCard(r)).join("") : `<div class="notice">条件に合う配信がありません。</div>`;
+}
+
+function userRadio(){
+  const radioTags=["のんびり","寝落ち","まったり","飲酒","雑談","ゲーム","お悩み","夜更かし"];
+  setTimeout(()=>refreshLiveRadioRooms(),0);
+
+  return `<div class="hero"><h1>ラジオ 🎙️</h1><p class="muted">音声だけで気軽に。コメントは無料。</p></div>
+    <div class="radio-search">
+      <input id="radioSearchInput" placeholder="配信者名・タイトルで検索" oninput="refreshLiveRadioRooms()">
+      <button class="btn" onclick="refreshLiveRadioRooms()">検索</button>
+    </div>
+    <div class="radio-tag-wrap">${radioTags.map(t=>`<button class="radio-tag" onclick="this.classList.toggle('active');refreshLiveRadioRooms()">${t}</button>`).join("")}</div>
+    <div id="liveRadioResults"><div class="notice">配信一覧を読み込んでいます…</div></div>`;
+}
+
+function userMy(){const p=getProfile("user");return `
+  <div class="hero"><h1>マイページ</h1><p class="muted">プロフィール・ポイント・利用履歴を確認できます。</p></div>
+  <div class="card">
+    <div class="row space"><div class="profile-head"><div class="profile-avatar">${profileAvatar("user")}</div><div><strong>${esc(p.name)}</strong><div class="meta">${esc(p.hobbies||"")}</div></div></div><button class="btn alt" onclick="openProfileEditor('user')">編集</button></div>
+    <p style="margin-top:10px">${esc(p.bio||"")}</p>
+    <div class="tags">${(Array.isArray(p.activeSlots)?p.activeSlots:[]).map(s=>`<span class="tag">🕘 ${esc(s)}</span>`).join("")}<span class="tag">🍷 ${esc(p.alcohol||"飲まない")}</span><span class="tag">🚭 ${esc(p.smoking||"吸わない")}</span><span class="tag">🎲 ${esc(p.gambling||"しない")}</span></div>
+    <div class="notice" style="margin-top:10px">${esc(p.free||"")}</div>
+  </div>
+  <div class="card"><div class="row space"><strong>本人確認</strong><span class="pill">確認済 ✓</span></div></div>
+  <div class="points"><div><div class="meta">保有ポイント</div><strong>${S.points}pt</strong></div><button class="btn alt" onclick="charge()">追加</button></div>
+  <div class="card"><h3>消費pt一覧</h3>${S.pointLedger.map(x=>`<div class="ledger-item"><div><div class="ledger-title">${esc(x.title)}</div><div class="ledger-sub">${esc(x.time)}</div></div><div class="ledger-minus">-${x.pt}pt</div></div>`).join("")}</div>
+  <div class="card"><div class="row space"><div><strong>会話機能</strong><div class="meta">Supabase接続設定</div><div class="meta">${CHAT_DEFAULTS.supabaseUrl&&CHAT_DEFAULTS.supabaseAnon?"接続情報あり":"未設定"}</div></div><button class="btn alt" onclick="openChatSetup()">設定</button></div></div><div id="installHint" class="installhint">📱 ホーム画面に追加するとアプリのように使えます。</div>
+  <div class="notice">この試作版では本物の決済・本人確認・音声配信は接続していません。</div>
+  ${themeMenu()}${safetyMenu("user")}
+  <button class="btn alt full" style="margin-top:12px" onclick="logoutCotorie()">ログアウト</button><button class="btn alt full" style="margin-top:8px" onclick="resetDemo()">初回登録からやり直す</button>`}
+
+
+function toggleStreamTag(el){
+  const selected=[...document.querySelectorAll(".radio-tag.active")];
+  if(el.classList.contains("active")){
+    el.classList.remove("active");
+  }else{
+    if(selected.length>=5){
+      alert("タグは5つまで選べます");
+      return;
+    }
+    el.classList.add("active");
+  }
+  const count=document.querySelectorAll(".radio-tag.active").length;
+  const c=document.querySelector("#streamTagCount");
+  if(c) c.textContent=`${count} / 5 選択中`;
+}
+
+function castRadio(){
+  const tagOptions=["のんびり","寝落ち","まったり","飲酒","雑談","ゲーム","お悩み","夜更かし","作業","読書","映画","音楽"];
+  const summary=getLastRadioSummary();
+
+  setTimeout(()=>renderRadioPreview(),0);
+
+  if(S.radioHosting){
+    const room=S.radioLiveMeta||{
+      room_id:S.radioRoomId||radioCurrentRoomId||"",
+      cast_name:currentCastDisplayName(),
+      title:"配信中",
+      cover_text:"配信中",
+      description:"マイク音声を配信しています。",
+      cover_image_url:radioDraftCoverDataUrl||"",
+      activity_text:"のんびり配信中",
+      tags:[]
+    };
+
+    setTimeout(()=>{
+      subscribeRadioComments(S.radioRoomId||radioCurrentRoomId);
+      loadRadioComments(S.radioRoomId||radioCurrentRoomId);
+      updateCastChatLogUI();
+    },0);
+
+    return `<div class="hero"><h1>ラジオ配信中 🎙️</h1><p class="muted">マイク音声を配信しています。</p></div>
+      ${makeLiveRoomCard(room, true)}
+
+      <div class="cast-chat-panel">
+        <div id="castChatLog" class="cast-chat-log">${castChatLogHtml()}</div>
+        <div class="cast-chat-compose">
+          <textarea id="castRadioChatInput" placeholder="チャットを入力" onkeydown="if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();sendCastRadioChat()}"></textarea>
+          <button class="btn" onclick="sendCastRadioChat()">送信</button>
+        </div>
+      </div>
+
+      <div class="live-controls">
+        <button class="btn alt" onclick="toggleRadioMute()">${S.radioMuted?'🔇 ミュート解除':'🎙️ ミュート'}</button>
+        <button class="btn" onclick="stopRadioRoom()">配信を終了する</button>
+      </div>
+
+      <div class="radio-live-edit">
+        <div class="field"><label>今していること（画像内の表示）</label><input id="liveActivityInput" value="${escapeAttr(room.activity_text||room.cover_text||'')}" placeholder="雑談中 / 作業中 / まったりお話 など"></div>
+        <div class="field"><label>配信内容</label><textarea id="liveDescriptionInput" rows="2" placeholder="配信内容">${escapeHtmlText(room.description||"")}</textarea></div>
+        <button class="btn alt" onclick="saveLiveActivityText()">表示を更新</button>
+      </div>`;
+  }
+
+  return `<div class="hero"><h1>ラジオを始める 🎙️</h1><p class="muted">マイク音声をリアルタイム配信します。</p></div>
+    ${summary?`
+      <div class="radio-summary">
+        <strong>前回の配信結果</strong>
+        <div class="radio-summary-grid">
+          <div class="radio-stat"><span class="meta">配信時間</span><strong>${summary.durationMinutes}分</strong></div>
+          <div class="radio-stat"><span class="meta">獲得Pt</span><strong>${summary.earnedPt}Pt</strong></div>
+        </div>
+      </div>`:""}
+    <div class="card">
+      <div class="field"><label>タイトル</label><input id="radioTitle" value="眠れない人の夜更かし雑談" oninput="renderRadioPreview()"></div>
+      <div class="field"><label>画像の上に表示する文字</label><input id="radioOverlay" value="夜ふかしラジオ" oninput="renderRadioPreview()"></div>
+      <div class="field"><label>配信内容</label><textarea id="radioDescription" rows="3" placeholder="今日はどんな配信かを書けます" oninput="renderRadioPreview()">のんびり雑談しながら、寝る前の時間を一緒に過ごします。</textarea></div>
+      <div class="field"><label>ルーム画像（任意）</label><input id="radioCoverInput" class="radio-file" type="file" accept="image/*" onchange="onRadioCoverSelected(this)"></div>
+      <div class="field">
+        <label>配信タグ（最大5つ）</label>
+        <div id="castRadioTags" class="radio-tag-wrap">${tagOptions.map(t=>`<button type="button" class="radio-tag" onclick="toggleStreamTag(this);renderRadioPreview()">${t}</button>`).join("")}</div>
+        <div id="streamTagCount" class="meta">0 / 5 選択中</div>
+      </div>
+      <div id="radioPreview"></div>
+      <div class="notice">配信開始時にブラウザからマイク許可を求められます。</div>
+      ${radioSafetyChecks()}<button class="btn full" style="margin-top:10px" onclick="createRadioRoom()">配信を開始する</button>
+    </div>`;
+}function castMy(){const p=getProfile("cast");return `
+  <div class="hero"><h1>マイページ</h1><p class="muted">報酬・本人確認・プロフィール管理。</p></div>
+  <div class="card">
+    <div class="row space"><div class="profile-head"><div class="profile-avatar">${profileAvatar("cast")}</div><div><strong>${esc(p.name)}</strong><div class="meta">${esc(p.hobbies||"")}</div></div></div><button class="btn alt" onclick="openProfileEditor('cast')">編集</button></div>
+    <p style="margin-top:10px">${esc(p.bio||"")}</p>
+    <div class="tags">${(Array.isArray(p.activeSlots)?p.activeSlots:[]).map(s=>`<span class="tag">🕘 ${esc(s)}</span>`).join("")}</div>
+    <div class="notice">${esc(p.free||"")}</div>
+  </div>
+  <div class="card"><div class="row space"><div><div class="meta">報酬残高</div><div class="stat">${S.earn}円</div></div><button class="btn" ${S.earn<1200?"disabled":""} onclick="simple('換金申請','実際の振込は行いません。')">換金申請</button></div><p>1,200円から申請可。5,000円以上なら手数料無料。</p></div>
+  <div class="card"><h3>本人確認</h3><div class="row space"><span>確認済み</span><span class="pill">✓ VERIFIED</span></div></div>
+  <div class="card"><div class="row space"><div><strong>会話機能</strong><div class="meta">Supabase接続設定</div><div class="meta">${CHAT_DEFAULTS.supabaseUrl&&CHAT_DEFAULTS.supabaseAnon?"接続情報あり":"未設定"}</div></div><button class="btn alt" onclick="openChatSetup()">設定</button></div></div><div id="installHint" class="installhint">📱 ホーム画面に追加するとアプリのように使えます。</div>
+  ${themeMenu()}${safetyMenu("cast")}
+  <button class="btn alt full" onclick="logoutCotorie()">ログアウト</button><button class="btn alt full" style="margin-top:8px" onclick="resetDemo()">初回登録からやり直す</button>`}
+const pages={user:[userHome,userSearch,userMessages,userRadio,userMy],cast:[castHome,castSearch,castMessages,castRadio,castMy]},names=["home","search","messages","radio","mypage"];
+
+
+const CHAT_DEFAULTS={
+  supabaseUrl:localStorage.cotorie_supabase_url||"",
+  supabaseAnon:localStorage.cotorie_supabase_anon||""
+};
+let chatClient=null;
+let chatChannel=null;
+
+function ensureChatClient(){
+  if(chatClient) return chatClient;
+  if(!CHAT_DEFAULTS.supabaseUrl || !CHAT_DEFAULTS.supabaseAnon) return null;
+  if(!window.supabase || !window.supabase.createClient) return null;
+  chatClient=window.supabase.createClient(CHAT_DEFAULTS.supabaseUrl,CHAT_DEFAULTS.supabaseAnon);
+  return chatClient;
+}
+
+function currentAccountId(){
+  const role=S.role||"user";
+  const p=getProfile(role);
+  const name=(p?.name||role).trim()||role;
+  return `${role}:${name}`;
+}
+
+function peerAccountId(){
+  if(S.chatPeer) return S.chatPeer;
+  if(S.chatRole==="cast"){
+    const u=DEMO_USERS[S.chatIndex] || DEMO_USERS[0];
+    return `user:${u?.name||"user"}`;
+  }
+  const c=casts[S.chatIndex] || casts[0];
+  return `cast:${c?.name||"cast"}`;
+}
+
+function chatThreadId(a,b){
+  return [a,b].sort().join("::");
+}
+
+function escapeHtmlText(v){
+  return String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
+}
+
+function formatChatTime(ts){
+  try{
+    return new Date(ts).toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
+  }catch(e){return "";}
+}
+
+
+const COTORIE_STAMPS=[
+  {id:"ohayo",emoji:"🐦☀️",label:"おはよ"},
+  {id:"otsukare",emoji:"🐦☕",label:"おつかれ"},
+  {id:"wakaru",emoji:"🐦💭",label:"わかる"},
+  {id:"thanks",emoji:"🐦💜",label:"ありがとう"},
+  {id:"sorry",emoji:"🐦🙇",label:"ごめん"},
+  {id:"sleepy",emoji:"🐦💤",label:"ねむい"},
+  {id:"happy",emoji:"🐦✨",label:"うれしい"},
+  {id:"peek",emoji:"🐦👀",label:"ちらっ"},
+  {id:"oyasumi",emoji:"🐦🌙",label:"おやすみ"},
+  {id:"cheers",emoji:"🐦🥂",label:"乾杯"},
+  {id:"fight",emoji:"🐦📣",label:"がんばれ"},
+  {id:"ok",emoji:"🐦👌",label:"OK"}
+];
+
+function stampById(id){
+  return COTORIE_STAMPS.find(s=>s.id===id)||COTORIE_STAMPS[0];
+}
+
+function toggleStampPanel(){
+  document.querySelector("#stampPanel")?.classList.toggle("hidden");
+}
+
+async function sendStamp(stampId){
+  const s=stampById(stampId);
+  await sendChatPayload("", "stamp", s.id);
+  document.querySelector("#stampPanel")?.classList.add("hidden");
+}
+
+
+function messageBodyHtml(m){
+  if(m.message_type==="stamp"){
+    const s=stampById(m.stamp_id);
+    return `<span class="stamp-emoji">${s.emoji}</span><span class="stamp-label">${escapeHtmlText(s.label)}</span>`;
+  }
+  return escapeHtmlText(m.body||"");
+}
+
+function renderChatMessages(rows){
+  const log=document.querySelector("#chatLog");
+  if(!log) return;
+  const myId=currentAccountId();
+
+  if(!rows || !rows.length){
+    log.innerHTML=`<div class="chat-empty">まだメッセージはありません。<br>ここから会話を始められます。</div>`;
+    return;
+  }
+
+  log.innerHTML=rows.map(m=>{
+    const mine=m.sender_id===myId;
+    const stampClass=m.message_type==="stamp"?" stamp-message":"";
+    return `<div class="bubble ${mine?"me":"them"}${stampClass}" data-message-id="${m.id||""}">
+      ${messageBodyHtml(m)}
+      <div class="chat-message-time">${formatChatTime(m.created_at)}</div>
+    </div>`;
+  }).join("");
+  log.scrollTop=log.scrollHeight;
+}
+
+function appendChatMessage(m,extraClass=""){
+  const log=document.querySelector("#chatLog");
+  if(!log) return;
+
+  log.querySelector(".chat-empty")?.remove();
+
+  const mine=m.sender_id===currentAccountId();
+  const el=document.createElement("div");
+  const stampClass=m.message_type==="stamp"?" stamp-message":"";
+  el.className=`bubble ${mine?"me":"them"}${stampClass} ${extraClass}`.trim();
+  if(m.id) el.dataset.messageId=m.id;
+  el.innerHTML=`${messageBodyHtml(m)}<div class="chat-message-time">${formatChatTime(m.created_at)}</div>`;
+  log.appendChild(el);
+  log.scrollTop=log.scrollHeight;
+  return el;
+}
+
+function showChatError(message){
+  let box=document.querySelector("#chatError");
+  if(!box){
+    box=document.createElement("div");
+    box.id="chatError";
+    box.className="chat-error";
+    const compose=document.querySelector(".chat-page-compose");
+    compose?.parentNode?.insertBefore(box,compose);
+  }
+  box.textContent=message;
+}
+
+function clearChatError(){
+  document.querySelector("#chatError")?.remove();
+}
+
+async function loadChatMessages(){
+  const client=ensureChatClient();
+  const status=document.querySelector("#chatStatus");
+
+  if(!client){
+    if(status) status.textContent="Supabase未設定";
+    renderChatMessages([]);
+    return;
+  }
+
+  try{
+    const thread=await ensureConversation() || chatThreadId(currentAccountId(),peerAccountId());
+    if(status) status.textContent="接続中…";
+
+    const {data,error}=await client
+      .from("cotorie_messages")
+      .select("id,thread_id,sender_id,receiver_id,body,message_type,stamp_id,created_at")
+      .eq("thread_id",thread)
+      .order("created_at",{ascending:true});
+
+    if(error) throw error;
+
+    if(status) status.textContent="オンライン";
+    clearChatError();
+    renderChatMessages(data||[]);
+    subscribeChat(thread);
+  }catch(err){
+    console.error("loadChatMessages:",err);
+    if(status) status.textContent="読込エラー";
+    showChatError(`履歴を読み込めませんでした：${err?.message||String(err)}`);
+  }
+}
+
+function subscribeChat(thread){
+  const client=ensureChatClient();
+  if(!client) return;
+
+  if(chatChannel){
+    try{client.removeChannel(chatChannel)}catch(e){}
+    chatChannel=null;
+  }
+
+  chatChannel=client.channel("cotorie-chat:"+thread)
+    .on(
+      "postgres_changes",
+      {event:"INSERT",schema:"public",table:"cotorie_messages",filter:`thread_id=eq.${thread}`},
+      payload=>{
+        const row=payload.new;
+        const exists=row?.id && document.querySelector(`[data-message-id="${row.id}"]`);
+        if(S.page==="chat" && chatThreadId(currentAccountId(),peerAccountId())===thread && !exists && row) appendChatMessage(row);
+        loadMessageList();
+      }
+    )
+    .subscribe();
+}
+
+async function sendChatMessage(){
+  const input=document.querySelector("#chatInput");
+  const body=(input?.value||"").trim();
+  if(!body) return;
+  await sendChatPayload(body,"text",null);
+}
+
+async function sendChatPayload(body,messageType="text",stampId=null){
+  const input=document.querySelector("#chatInput");
+  const status=document.querySelector("#chatStatus");
+  const btn=document.querySelector(".chat-send");
+  const client=ensureChatClient();
+
+  if(!client){
+    openChatSetup();
+    return;
+  }
+
+  const sender=currentAccountId();
+  const receiver=peerAccountId();
+  const optimistic={
+    sender_id:sender,
+    receiver_id:receiver,
+    body:body||"",
+    message_type:messageType,
+    stamp_id:stampId,
+    created_at:new Date().toISOString()
+  };
+
+  clearChatError();
+  const optimisticEl=appendChatMessage(optimistic,"pending");
+
+  if(messageType==="text" && input) input.value="";
+  if(btn) btn.disabled=true;
+  if(status) status.textContent="送信中…";
+
+  try{
+    const thread=await ensureConversation() || chatThreadId(sender,receiver);
+
+    const {data,error}=await client
+      .from("cotorie_messages")
+      .insert({
+        thread_id:thread,
+        sender_id:sender,
+        receiver_id:receiver,
+        body:body||"",
+        message_type:messageType,
+        stamp_id:stampId
+      })
+      .select("id,thread_id,sender_id,receiver_id,body,message_type,stamp_id,created_at")
+      .single();
+
+    if(error) throw error;
+    if(!data || !data.id) throw new Error("メッセージ保存後のデータを取得できませんでした");
+
+    if(optimisticEl){
+      document.querySelector(`[data-message-id="${data.id}"]`)?.remove();
+      optimisticEl.className=`bubble me${data.message_type==="stamp"?" stamp-message":""}`;
+      optimisticEl.dataset.messageId=data.id;
+      optimisticEl.innerHTML=`${messageBodyHtml(data)}<div class="chat-message-time">${formatChatTime(data.created_at)}</div>`;
+    }
+
+    if(status) status.textContent="送信済み";
+    await loadMessageList();
+    setTimeout(()=>{const s=document.querySelector("#chatStatus");if(s)s.textContent="オンライン"},700);
+
+    const verify=await client
+      .from("cotorie_messages")
+      .select("id")
+      .eq("id",data.id)
+      .maybeSingle();
+
+    if(verify.error) throw verify.error;
+    if(!verify.data) throw new Error("送信したメッセージをDBから再確認できませんでした");
+
+  }catch(err){
+    console.error("sendChatPayload:",err);
+
+    if(optimisticEl){
+      optimisticEl.classList.remove("pending");
+      optimisticEl.classList.add("failed");
+    }
+
+    if(messageType==="text" && input && !input.value) input.value=body;
+    if(status) status.textContent="送信失敗";
+    showChatError(`送信できませんでした：${err?.message||String(err)}`);
+  }finally{
+    if(btn) btn.disabled=false;
+  }
+}
+
+function openChatSetup(){
+  show(`
+    <h3 style="margin-top:0">会話機能の接続設定 <span style="font-size:11px;color:#9b91a8">v50</span></h3>
+    <p class="muted">SupabaseのProject URLとPublishable keyを入力してください。</p>
+
+    <div class="field">
+      <label>Project URL</label>
+      <input id="chatSbUrl" type="text" placeholder="https://xxxx.supabase.co" value="${escapeHtmlText(CHAT_DEFAULTS.supabaseUrl)}">
+    </div>
+
+    <div class="field">
+      <label>Publishable key</label>
+      <textarea id="chatSbAnon" rows="4" placeholder="sb_publishable_...">${escapeHtmlText(CHAT_DEFAULTS.supabaseAnon)}</textarea>
+    </div>
+
+    <button id="chatConnectBtn" type="button" class="btn full" onclick="saveChatSetup()">
+      保存して接続テスト
+    </button>
+
+    <div id="chatSetupStatus" class="connection-status" style="margin-top:12px">
+      まだ接続テストしていません。（v50）
+    </div>
+  `);
+}
+
+
+
+async function saveChatSetup(){
+  const url=(document.querySelector("#chatSbUrl")?.value||"").trim();
+  const key=(document.querySelector("#chatSbAnon")?.value||"").trim();
+  const status=document.querySelector("#chatSetupStatus");
+  const btn=document.querySelector("#chatConnectBtn");
+
+  if(!url || !key){
+    if(status){
+      status.className="connection-status ng";
+      status.textContent="Project URLとPublishable keyの両方を入力してください。";
+    }
+    return;
+  }
+
+  if(btn){
+    btn.disabled=true;
+    btn.textContent="接続テスト中…";
+  }
+  if(status){
+    status.className="connection-status wait";
+    status.textContent="Supabaseへ接続しています…";
+  }
+
+  localStorage.cotorie_supabase_url=url;
+  localStorage.cotorie_supabase_anon=key;
+  CHAT_DEFAULTS.supabaseUrl=url;
+  CHAT_DEFAULTS.supabaseAnon=key;
+  chatClient=null;
+
+  try{
+    const client=ensureChatClient();
+    if(!client){
+      throw new Error("Supabaseクライアントを作成できませんでした");
+    }
+
+    // 1. Table connection test
+    const test=await client
+      .from("cotorie_profiles")
+      .select("account_id")
+      .limit(1);
+
+    if(test.error) throw test.error;
+
+    // 2. Profile upsert directly here; do not depend on another helper.
+    const role=S.role||"user";
+    const p=getProfile(role);
+    const account_id=currentAccountId();
+
+    const payload={
+      account_id:account_id,
+      role:role,
+      nickname:(p&&p.name)||role,
+      avatar_text:(p&&p.icon)||"",
+      hobbies:(p&&p.hobbies)||"",
+      bio:(p&&p.bio)||"",
+      updated_at:new Date().toISOString()
+    };
+
+    const profileResult=await client
+      .from("cotorie_profiles")
+      .upsert(payload,{onConflict:"account_id"});
+
+    if(profileResult.error) throw profileResult.error;
+
+    if(status){
+      status.className="connection-status ok";
+      status.innerHTML="✅ 接続できました。<br>Cotorieの会話機能が利用できます。";
+    }
+    if(btn){
+      btn.disabled=false;
+      btn.textContent="接続済み";
+    }
+  }catch(err){
+    console.error("Supabase connection test:",err);
+    if(status){
+      status.className="connection-status ng";
+      const msg=err?.message||String(err);
+      status.innerHTML=`❌ 接続できませんでした。<br><span style="font-size:11px">${escapeHtmlText(msg)}</span>`;
+    }
+    if(btn){
+      btn.disabled=false;
+      btn.textContent="もう一度接続テスト";
+    }
+  }
+}
+
+
+async function ensureConversation(){
+  const client=ensureChatClient();
+  if(!client) return null;
+
+  const a=currentAccountId();
+  const b=peerAccountId();
+  const thread=chatThreadId(a,b);
+
+  const payload={
+    thread_id:thread,
+    user_account_id:S.chatRole==="cast"?b:a,
+    cast_account_id:S.chatRole==="cast"?a:b,
+    updated_at:new Date().toISOString()
+  };
+
+  const {error}=await client
+    .from("cotorie_conversations")
+    .upsert(payload,{onConflict:"thread_id"});
+
+  if(error) throw error;
+  return thread;
+}
+
+function loginScreen(){
+  const role=S.loginRole||"user";
+  return `<div class="login-gate">
+    <div class="login-card">
+      <div class="login-brand">
+        <div style="font-size:34px">🐦</div>
+        <h1>Cotorie</h1>
+        <div class="meta">${role==="cast"?"キャスト用ログイン":"利用者用ログイン"}</div>
+      </div>
+
+      <div class="login-role-grid">
+        <button type="button" class="login-role-card ${role==="user"?"active":""}" onclick="selectLoginRole('user')">
+          <div class="role-emoji">💬</div>
+          <strong>利用者</strong>
+          <span class="meta">おはなし相手を探す</span>
+        </button>
+        <button type="button" class="login-role-card ${role==="cast"?"active":""}" onclick="selectLoginRole('cast')">
+          <div class="role-emoji">🎙️</div>
+          <strong>キャスト</strong>
+          <span class="meta">性別不問・20歳以上</span>
+        </button>
+      </div>
+
+      <div class="login-form">
+        <div class="field">
+          <label>メールアドレス</label>
+          <input id="loginEmail" type="email" placeholder="demo@example.com" value="demo@example.com">
+        </div>
+        <div class="field">
+          <label>パスワード</label>
+          <input id="loginPassword" type="password" placeholder="パスワード" value="demo1234">
+        </div>
+        <button class="btn full" onclick="demoLogin()">${role==="cast"?"キャストとしてログイン":"利用者としてログイン"}</button>
+      </div>
+
+      <div class="login-note">
+        デモ版のため、メールアドレスとパスワードは実際の認証には使用しません。
+      </div>
+    </div>
+  </div>`;
+}
+
+function selectLoginRole(role){
+  S.loginRole=role;
+  render();
+}
+
+function demoLogin(){
+  const role=S.loginRole||"user";
+  S.loggedIn=true;
+  S.role=role;
+  S.loginRole=role;
+  S.page="home";
+  save();
+  render();
+  setTimeout(()=>{if(typeof window.syncCotorieProfile==="function"){window.syncCotorieProfile().catch(console.warn)}},0);
+}
+
+function logoutCotorie(){
+  S.loggedIn=false;
+  S.loginRole=S.role||"user";
+  localStorage.cotorie_loggedIn="0";
+  localStorage.cotorie_loginRole=S.loginRole;
+  render();
+}
+
+let inboxTimer=null;
+function render(){
+  clearInterval(inboxTimer); inboxTimer=null;
+  if(S.loggedIn && S.page==="messages") inboxTimer=setInterval(loadMessageList,4000);
+  if(S.page!=="chat" && chatChannel){ensureChatClient()?.removeChannel(chatChannel);chatChannel=null;}
+  if(!S.loggedIn){
+    const roleEl=document.querySelector("#role");
+    if(roleEl) roleEl.textContent="ログイン";
+    document.querySelector("#main").innerHTML=loginScreen();
+    document.querySelector(".nav")?.classList.add("hidden");
+    return;
+  }
+
+  const roleEl=document.querySelector("#role");
+  if(roleEl){
+    roleEl.innerHTML=`<span class="app-role-badge">${S.role==="user"?"利用者":"キャスト"}</span>`;
+  }
+
+  if(!safetyAccepted(S.role)){document.querySelector(".nav")?.classList.add("hidden");document.querySelector("#main").innerHTML=safetyGate(S.role);return;}
+  if(S.page==="chat"){
+    document.querySelector("#main").innerHTML=chatPage();
+    document.querySelector(".nav")?.classList.add("hidden");
+    return;
+  }
+
+  document.querySelector(".nav")?.classList.remove("hidden");
+  const idx=names.indexOf(S.page);
+  document.querySelector("#main").innerHTML=pages[S.role][idx]();
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===S.page));
+  if(S.role==="cast" && S.page==="search") applyAtameFilters();
+}
+
+function go(p){S.page=p;render()}document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelector("#role").onclick=()=>{if(S.loggedIn) logoutCotorie();}
+function show(h){document.querySelector("#modal").innerHTML=h;document.querySelector("#modalbg").classList.remove("hidden")}function closeM(){document.querySelector("#modalbg").classList.add("hidden")}document.querySelector("#modalbg").onclick=e=>{if(e.target.id==="modalbg")closeM()}
+function mail(i){show(`<h3>${casts[i].a} ${casts[i].name}さんにメール</h3><p class="muted">送信すると40pt消費します。</p><div class="field"><textarea id="msg" placeholder="メッセージ"></textarea></div><div class="row"><button class="btn" onclick="sendMail()">40ptで送る</button><button class="btn alt" onclick="closeM()">やめる</button></div>`)}
+function sendMail(){if(S.points<40)return alert("ポイントが足りません");S.points-=40;addLedger("お話ししました",40);save();closeM();render();alert("送信しました（試作）")}
+function profile(i){const c=casts[i];show(`<div class="row"><div class="avatar">${c.a}</div><div><h3 style="margin:0">${c.name}</h3><div class="meta">${c.age}歳・${c.area}・${esc(c.gender||"非公開")}</div></div></div><div class="tags">${c.tags.map(x=>`<span class="tag">${x}</span>`).join("")}</div><p>${c.bio}</p><button class="btn full" onclick="openChat(${i},&quot;user&quot;)">はなしかける</button>`)}
+function charge(){show(`<h3>ポイント追加</h3><p class="muted">試作なので実際の決済はありません。</p><div class="grid"><button onclick="add(500)">500pt</button><button onclick="add(1000)">1000pt</button><button onclick="add(3000)">3000pt</button></div>`)}function add(n){S.points+=n;save();closeM();render()}
+function listen(){show(`<h3>🎙️ 無料3分を再生中…</h3><p class="muted">3分を超えると2pt/分。</p><button class="btn full" onclick="radioMinute()">2ptで1分続ける</button>`)}function radioMinute(){if(S.points<2)return alert("ポイント不足");S.points-=2;addLedger("ラジオ視聴",2);save();closeM();render()}
+
+function getAtamePeople(){
+  return ATAME_PEOPLE.map(p=>({...p,tags:[...p.tags]}));
+}
+function formatLast(min){
+  if(min<60) return `${min}分前`;
+  const h=Math.floor(min/60);
+  return `${h}時間前`;
+}
+function applyAtameFilters(){
+  const host=document.querySelector("#atameList");
+  if(!host) return;
+
+  const people=getAtamePeople();
+  const status=document.querySelector("#atameStatus")?.value || "all";
+  const area=document.querySelector("#atameArea")?.value || "all";
+  const tag=document.querySelector("#atameTag")?.value || "all";
+  const sort=document.querySelector("#atameSort")?.value || "login";
+
+  let list=people.filter(p=>!S.atameSent[p.name]);
+
+  if(status==="online") list=list.filter(p=>p.online);
+  if(status==="new") list=list.filter(p=>p.newUser);
+  if(area!=="all") list=list.filter(p=>p.area===area);
+  if(tag!=="all") list=list.filter(p=>p.tags.includes(tag));
+
+  if(sort==="login") list.sort((a,b)=>a.lastMin-b.lastMin);
+  if(sort==="online") list.sort((a,b)=>(b.online-a.online)||(a.lastMin-b.lastMin));
+  if(sort==="ageAsc") list.sort((a,b)=>a.age-b.age);
+  if(sort==="ageDesc") list.sort((a,b)=>b.age-a.age);
+
+  host.innerHTML=list.map(p=>`
+    <div class="card atame-user" data-atame-user="${esc(p.name)}">
+      <div class="row space">
+        <div class="row">
+          <button class="atame-avatar-btn" onclick="atameProfile('${esc(p.name)}')"><div class="avatar">${p.a}</div></button>
+          <div>
+            <div class="atame-name-line">
+              <strong>${esc(p.name)}</strong>
+              <div class="atame-inline-tags">${p.tags.slice(0,3).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+            </div>
+            <div class="meta">最終ログイン ${formatLast(p.lastMin)}</div>
+            <div class="meta">${p.online ? "● オンライン" : "オフライン"}${p.newUser ? " ・ NEW" : ""}</div>
+          </div>
+        </div>
+        <button class="btn" onclick="sendAtame('${esc(p.name)}')">アタメ送信</button>
+      </div>
+    </div>
+  `).join("");
+
+  const done=document.querySelector("#atameDone");
+  if(done) done.classList.toggle("hidden", list.length>0);
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function sendAtame(name){
+  const t=atameTemplates[S.atameTemplate] || atameTemplates[0];
+  S.atameSent[name]=true;
+  save();
+
+  const row=[...document.querySelectorAll(".atame-user")]
+    .find(el=>el.dataset.atameUser===name);
+
+  if(row){
+    row.style.transition="opacity .16s ease, transform .16s ease";
+    row.style.opacity="0";
+    row.style.transform="translateY(-4px)";
+    setTimeout(()=>{
+      if(document.querySelector("#atameList")){
+        applyAtameFilters();
+      }else{
+        render();
+      }
+    },160);
+  } else {
+    if(document.querySelector("#atameList")) applyAtameFilters();
+    else render();
+  }
+
+  // 連打を止めない小さな通知だけ表示
+  let toast=document.querySelector("#atameToast");
+  if(!toast){
+    toast=document.createElement("div");
+    toast.id="atameToast";
+    toast.style.cssText="position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:99;background:#4d435b;color:white;padding:9px 13px;border-radius:999px;font-size:12px;font-weight:800;box-shadow:0 8px 22px #0002;pointer-events:none";
+    document.body.appendChild(toast);
+  }
+  toast.textContent=`${name}さんへ「${t.name}」を送信しました`;
+  toast.style.opacity="1";
+  clearTimeout(window._atameToastTimer);
+  window._atameToastTimer=setTimeout(()=>toast.style.opacity="0",900);
+}
+function templateManager(){
+  const options=atameTemplates.map((t,i)=>`<option value="${i}" ${i===S.atameTemplate?"selected":""}>${esc(t.name)}</option>`).join("");
+  show(`<h3>アタックメール用テンプレート</h3>
+    <p class="muted">ここで選んだアタックメール用テンプレートが、ワンクリック送信に使われます。</p>
+    <div class="field"><label>使用するテンプレート</label><select id="tplSelect">${options}</select></div>
+    <div id="tplPreview" class="notice">${esc((atameTemplates[S.atameTemplate]||atameTemplates[0]).body)}</div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" onclick="selectTemplate()">これを使う</button>
+      <button class="btn alt" onclick="newTemplate()">＋新規作成</button>
+    </div>`);
+  document.querySelector("#tplSelect").onchange=e=>{
+    const t=atameTemplates[+e.target.value];
+    document.querySelector("#tplPreview").textContent=t.body;
+  };
+}
+function selectTemplate(){
+  S.atameTemplate=+document.querySelector("#tplSelect").value;
+  save(); closeM(); render();
+}
+function newTemplate(){
+  show(`<h3>アタックメール用テンプレートを作成</h3>
+    <div class="field"><label>テンプレート名</label><input id="tplName" placeholder="例：読書好きさんへ / 夜更かしさんへ"></div>
+    <div class="field"><label>本文</label><textarea id="tplBody" placeholder="アタックメール本文を入力"></textarea></div>
+    <div class="row"><button class="btn" onclick="saveTemplate()">保存して使う</button><button class="btn alt" onclick="templateManager()">戻る</button></div>`);
+}
+function saveTemplate(){
+  const name=document.querySelector("#tplName").value.trim();
+  const body=document.querySelector("#tplBody").value.trim();
+  if(!name||!body)return alert("テンプレート名と本文を入力してください");
+  atameTemplates.push({name,body});
+  S.atameTemplate=atameTemplates.length-1;
+  save(); closeM(); render();
+}
+function reply(){S.earn+=12;save();render();alert("返信しました。報酬+12円（試作）")}
+function search(){const q=(document.querySelector("#q").value||"").toLowerCase();const rs=casts.filter(c=>[c.name,c.area,c.bio,...c.tags].join(" ").toLowerCase().includes(q));document.querySelector("#results").innerHTML=(rs.length?rs:casts).map(c=>card(c,casts.indexOf(c))).join("")}
+function simple(t,d){show(`<h3>${t}</h3><p class="muted">${d}</p><button class="btn full" onclick="closeM()">OK</button>`)}
+
+const COTORIE_THEMES=[{id:"bloom",name:"花咲くコトリエ",desc:"ラベンダー・ローズ・淡い金色",swatch:"linear-gradient(110deg,#d9c1fa,#f9cfe1,#ffe6ad)"},{id:"sky",name:"空色のテラス",desc:"水色・青紫・クリーム",swatch:"linear-gradient(110deg,#a8e0f2,#c7d4ff,#fff0c5)"},{id:"jewel",name:"宝石のことば",desc:"紫・モーヴ・ミント",swatch:"linear-gradient(110deg,#c4b4ee,#e8b5d1,#bae9d8)"}];
+function applyTheme(id){if(!COTORIE_THEMES.some(t=>t.id===id))id="bloom";document.documentElement.dataset.theme=id;localStorage.setItem("cotorie_theme",id);}
+function themeMenu(){return `<div class="card"><h3>画面テーマ</h3><p>好きな雰囲気を選べます。</p><div class="theme-pick">${COTORIE_THEMES.map(t=>`<button class="theme-choice" aria-pressed="${document.documentElement.dataset.theme===t.id}" onclick="applyTheme('${t.id}');render()"><span class="theme-swatch" style="background:${t.swatch}"></span><span>${t.name}<span class="meta" style="display:block">${t.desc}</span></span></button>`).join("")}</div></div>`;}
+applyTheme(localStorage.getItem("cotorie_theme")||"bloom");
+
+const SAFETY_VERSION="2026-11-26.2";
+const SAFETY_COMMON={"R-18・性的行為の禁止": ["性的な会話、卑猥な発言", "性行為を連想させる発言", "性的経験・嗜好・フェティシズムの質問", "下着や身体的特徴・サイズの質問", "裸・下着姿・露出の多い写真の要求", "性的画像・動画・音声の送信", "アダルトサイトへの誘導", "性的な音声・演技・ロールプレイの要求や提供", "性的な隠語・絵文字・スタンプの利用", "性的サービスの交渉", "ポイントやギフトを対価とする性的要求", "性的発言の強要", "冗談を装ったセクハラ", "画像の性的加工・利用", "性的興奮を目的とする利用"], "出会い・恋愛目的の禁止": ["実際に会うこと、食事・デート・宿泊施設への誘い", "交際・結婚の強要", "パパ活・援助交際", "金銭を対価に会うこと", "生活圏・勤務先の特定、待ち伏せ、追跡", "恋人や配偶者の有無を執拗に尋ねる", "恋人関係や特別扱いの強要", "他の利用者との交流制限", "嫉妬・独占・束縛"], "外部連絡先": ["LINE・Discord・X・Instagram等のSNS交換", "電話番号・メールアドレス・QRコードの交換", "外部通話・他のチャットサービスへの誘導", "伏字・暗号・分割による連絡先伝達", "プロフィール・配信画像への連絡先掲載", "個人SNSの特定・接触", "サービス外でのやり取りの提案"], "暴言・ハラスメント": ["暴言・罵倒・侮辱", "容姿・年齢・体型への中傷", "性別・国籍・人種・宗教・障害・病気・性的指向等の差別", "人格否定・見下し", "返信速度への執拗な非難", "返信・深夜早朝対応の強要", "連投による嫌がらせ", "不快なあだ名", "拒否された話題の繰り返し", "謝罪・命令・理不尽な要求", "私生活への干渉", "課金を理由とする特別扱い要求", "退会・通報を盾にした要求", "脅迫・恐喝・威圧", "ブロック後の別アカウント接触", "第三者を介した嫌がらせ"], "金銭・物品": ["直接送金・金銭要求・貸し借り", "送金サービスや銀行口座情報の交換", "金券・ほしいものリスト・暗号資産・外部プレゼント", "ポイント換金・転売（正規のキャスト換金を除く）", "アカウント売買", "不正ポイント使用", "他人のカードの無断利用", "不正決済・虚偽返金申請", "投資・副業・マルチ商法・賭博への勧誘", "援助を条件とする要求"], "個人情報・プライバシー": ["本名・住所・最寄り駅・勤務先・学校・家族情報の執拗な聞き出し", "身分証や位置情報の要求", "写真背景からの特定", "写真・会話・配信音声・スクリーンショットの無断公開や転載", "個人情報の第三者提供", "なりすまし", "画像・音声の無断AI学習・ディープフェイク利用", "掲示板等での個人情報公開"], "精神的負担": ["自傷・自殺をほのめかして返信を強要する行為", "生命や安全の責任を相手に負わせる", "罪悪感を利用した要求", "休息・退勤の妨害", "対応できないことへの非難", "依存による束縛", "自傷・他害の強要や助長", "残虐画像・動画の送信", "虚偽の危機を伝えて相手を試す", "専門的な医療・心理・法律相談の強要"], "アカウント・不正利用": ["20歳未満の登録・利用", "年齢虚偽・本人確認書類偽造・他人名義登録", "なりすまし・アカウント貸与譲渡", "複数アカウントの悪用・停止回避", "BOTによる大量送信", "不具合悪用・不正アクセス", "有害ファイル送信", "運営妨害", "虚偽通報・評価機能悪用", "運営スタッフへのなりすまし", "不正情報収集", "規約違反の誘導"], "ラジオ視聴": ["性的コメント・リクエスト", "配信妨害・連投", "視聴者同士の喧嘩・中傷", "他の配信の宣伝・外部誘導", "ギフトを理由に行動を要求", "読み上げ・延長・ミュート解除の強要", "配信終了への非難", "荒らし・意図的なネタバレ", "個人情報掲載", "視聴者への出会い目的の接触"], "その他": ["宗教・政治団体への勧誘や支持強要", "営業活動", "犯罪・違法薬物・違法賭博への勧誘", "犯罪・暴力・動物虐待の助長", "著作権その他第三者の権利侵害", "公序良俗に反する行為", "運営が合理的理由に基づき不適切と判断する行為"]};
+const SAFETY_CAST={"アダルトサービス提供禁止": ["性的会話・誘導・隠語営業", "性的アタメ", "裸・下着姿・性的画像動画音声の提供", "性的演技・ロールプレイ・配信", "アダルトサービス宣伝・外部誘導", "ギフトを条件とする性的提供", "要求に応じた規約違反", "プロフィール・ルーム画像による性的誘導"], "不適切な恋愛営業": ["会える・交際できる・結婚できると偽る", "恋人関係を条件とするギフト要求", "恋愛感情を利用した過度な課金誘導", "課金しなければ嫌いになるという発言", "課金額を愛情と評価", "嫉妬を煽る・他人の課金額と比較", "虚偽の独占関係", "他の人間関係を断たせる", "孤独や不安の悪用", "意図的な精神的依存の形成"], "虚偽・詐欺的営業": ["病気・怪我・家族の不幸・経済的困窮・借金を偽る", "虚偽の緊急事態", "架空のイベントや目標", "報酬用途の虚偽", "ギフトの対価の虚偽約束", "非公認特典の販売", "他人の実績・プロフィールの流用"], "過度な課金誘導": ["返信を条件にポイント購入を強要", "執拗なギフト要求・高額ギフト強要", "無課金利用者への侮辱", "経済状況を無視した誘導", "借金・カード限度額までの課金・生活費削減を勧める", "家族に隠すよう促す", "判断力低下・酩酊を悪用", "課金をやめたい相手を執拗に引き止める", "他キャストへの課金妨害"], "報酬の不正取得": ["意味のない大量送信", "不必要な分割送信", "意図的な会話引き延ばし", "同じ質問の反復", "発言を無視した返信数稼ぎ", "故意の誤解誘導", "自作自演・自己管理アカウントとの取引", "知人との共謀", "BOT・AIによる無人会話", "件数水増し・不具合悪用"], "アタックメール": ["性的内容・出会い示唆・虚偽プロフィール", "不安を煽る・返信しないことを責める", "金銭援助要求・外部連絡先記載", "送信制限回避", "ブロック・拒否後の再送信", "不正自動大量送信", "なりすまし営業"], "プロフィール": ["年齢・本人確認の虚偽", "他人の本人確認書類・写真の使用", "芸能人等へのなりすまし", "AI画像を本人実写と偽る", "権利侵害画像", "性的画像・自己紹介", "外部連絡先掲載", "資格詐称", "スタッフなりすまし", "本人以外の使用・貸与売買"], "ラジオ配信": ["性的配信・性的要求への対応", "暴言・差別・視聴者やキャストへの中傷", "過度なギフト要求・無課金への嫌がらせ", "第三者の無許可音声・個人情報読み上げ", "無許諾の音楽や番組配信・他人の音声使用", "無人・寝たまま放置による報酬稼ぎ", "録音をライブと偽る", "時間・視聴者数水増し・自作自演", "危険行為・過度の飲酒による迷惑", "違法薬物の使用や推奨", "タグと内容の著しい相違", "ミュート・離席の悪用"], "キャストメモと個人情報": ["個人情報流出・メモ無断公開", "会話のSNS投稿・課金額公開", "特定情報を他キャストへ提供", "外部営業利用", "弱みを記録して課金に悪用", "不要な個人情報収集", "差別・嫌がらせ", "会話データ販売・外部AIへの無断提供", "非公認顧客管理サービスへの転送"], "キャスト同士": ["中傷・報酬への嫌がらせ", "虚偽通報・利用者を奪うための虚偽情報", "個人情報公開・なりすまし", "不正報酬の共謀", "外部サービスへの引き抜き", "集団嫌がらせ・排斥", "他キャストの通報強要"]};
+const SAFETY_RIGHTS={"利用者の権利": ["不快なキャストのブロック・通報", "アタメ受信停止", "理由なく会話終了", "ギフト・課金・個人情報開示の拒否", "利用・ポイント履歴の確認", "不正請求の相談", "退会・処分への異議申し立て"], "キャストの権利": ["不快な話題の拒否", "ブロック・通報", "理由なく会話終了", "自由な活動時間・休息", "ノルマや即時返信の強制を受けない", "本名・住所・顔写真の非公開", "性的要求・ギフトを理由とする要求の拒否", "配信中のミュート・離席", "運営への相談・処分への異議申し立て"], "違反時の対応": ["注意・警告", "コンテンツ削除", "機能制限・一時停止", "報酬調査・必要な範囲の換金保留", "強制退会・再登録禁止", "必要に応じ警察や弁護士への相談", "重大な違反は事前警告なしの停止もあり得る。正当な報酬を一律没収しない方針"]};
+
+function safetyRole(){return S.loggedIn?S.role:(S.loginRole||APP.selectedRole||'user')}
+function safetyKey(role){return 'cotorie_safety_'+role+'_'+(getProfile(role)?.name||role)}
+function safetyAccepted(role){return safeJSON(localStorage.getItem(safetyKey(role)),null)?.version===SAFETY_VERSION}
+function safetySections(obj){return Object.entries(obj).map(([k,v])=>`<details class="safety-detail"><summary>${esc(k)}</summary><ul>${v.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`).join('')}
+function safetyGuide(role=safetyRole()){return `<h2>${role==='cast'?'キャスト':'利用者'}向け安全ガイド</h2><p class="notice">20歳以上・性別不問・完全ノンアダルト。双方が同意しても禁止行為は認めません。ポイントは相手を支配する権利ではありません。</p><p>一般的な恋愛相談や悩み相談は可能です。専門家による相談・緊急対応は保証しません。正当な通報・警察等への相談のための証拠保存は認めます。</p>${safetySections(SAFETY_COMMON)}${role==='cast'?'<h3>キャスト固有の禁止事項</h3>'+safetySections(SAFETY_CAST)+'<p>ニックネームや非公開プロフィール、公式テンプレート、本人による文章推敲の補助、作業・寝落ち向け・飲酒配信は認めます。不正放置や無人会話は禁止です。</p>':''}${safetySections({[role==='cast'?'キャストの権利':'利用者の権利']:SAFETY_RIGHTS[role==='cast'?'キャストの権利':'利用者の権利'],'違反時の対応':SAFETY_RIGHTS['違反時の対応']})}<p class="meta">ガイド版 ${SAFETY_VERSION} ／ 試作版。通報・ブロック等は未実装のものがあります。</p>`}
+function openSafetyGuide(role=safetyRole()){show(safetyGuide(role)+'<button class="btn full" onclick="closeM()">閉じる</button>')}
+function safetyDraft(kind){const texts={terms:'利用条件案：20歳以上限定。安全ガイドの遵守が必要です。正式な契約条件・返金・退会条件は公開前に確定します。',privacy:'個人情報取扱方針案：本番では取得目的、保存期間、第三者提供、問い合わせ窓口等を明示します。現在は試作DBでアクセス制限が未整備のため、実際の個人情報や秘密を入力しないでください。',reward:'報酬規定案：メッセージ返信12円、アタメ報酬なし、ラジオ・ギフト報酬は試算段階。換金は1,200円から、5,000円以上手数料無料の予定。実際の決済・換金は未提供。'};show(`<h3>文書案（未確定）</h3><p>${esc(texts[kind])}</p><button class="btn full" onclick="closeM()">閉じる</button>`)}
+function safetyMenu(role){return `<div class="card"><h3>ヘルプ・安全ガイド</h3><button class="btn alt full" onclick="openSafetyGuide('${role}')">注意事項・禁止行為／権利</button><button class="btn alt full" onclick="safetyDraft('terms')">利用規約（案）</button><button class="btn alt full" onclick="safetyDraft('privacy')">プライバシーポリシー（案）</button>${role==='cast'?'<button class="btn alt full" onclick="safetyDraft(\'reward\')">報酬規定（案）</button>':''}<p class="meta">正式な通報・お問い合わせ窓口は準備中です。</p></div>`}
+function safetyChecks(role){const items=['私は20歳以上です','完全ノンアダルトであることを理解しました','性的な会話・要求・提供を行いません','出会い・交際目的で利用しません','外部連絡先交換・直接送金を行いません','暴言・嫌がらせ・強要を行いません','違反時に利用制限される場合があることを理解しました','安全ガイドを確認し同意します'];if(role==='cast')items.push('不正報酬・恋愛営業・過度な課金誘導を行わず個人情報を守ります','報酬規定案を確認しました');return `<div class="safety-checks">${items.map(x=>`<label><input type="checkbox" class="safety-consent">${esc(x)}</label>`).join('')}</div>`}
+function acceptSafety(role){const checks=[...document.querySelectorAll('#main .safety-consent')];if(!checks.length||!checks.every(x=>x.checked)){alert('すべての項目を確認してください');return}localStorage.setItem(safetyKey(role),JSON.stringify({version:SAFETY_VERSION,accepted_at:new Date().toISOString(),role}));render()}
+function safetyGate(role){return `<div class="card safety-gate"><h2>ご利用前の確認</h2><p>初回またはガイド更新時に同意が必要です。</p>${safetyGuide(role)}${safetyChecks(role)}<button class="btn full" onclick="acceptSafety('${role}')">同意して進む</button><button class="btn alt full" onclick="logoutCotorie()">同意せずログアウト</button></div>`}
+function safetyChatNotice(){return `<details class="safety-chat" ${localStorage.getItem('cotorie_chat_notice_'+currentAccountId())?'':'open'} ontoggle="if(!this.open)localStorage.setItem('cotorie_chat_notice_'+currentAccountId(),'1')"><summary>🛡️ 安心してお話しするために</summary><p>性的な会話・出会い目的・連絡先交換は禁止です。</p><button class="btn alt" onclick="openSafetyGuide()">禁止事項を確認</button></details>`}
+function radioSafetyReady(){return [...document.querySelectorAll('.radio-safety-check')].length===3&&[...document.querySelectorAll('.radio-safety-check')].every(x=>x.checked)}
+function radioSafetyChecks(){return `<div class="safety-checks"><label><input type="checkbox" class="radio-safety-check">性的な発言・配信を行いません</label><label><input type="checkbox" class="radio-safety-check">著作権・プライバシーを侵害しません</label><label><input type="checkbox" class="radio-safety-check">無人配信などによる不正報酬取得を行いません</label><button class="btn alt" onclick="openSafetyGuide('cast')">配信ガイドを確認</button></div>`}
+async function safetyJoin(roomId){const key='cotorie_radio_notice_'+currentAccountId()+'_'+SAFETY_VERSION;if(!localStorage.getItem(key)){if(!confirm('性的コメント・配信妨害・連絡先交換は禁止です。視聴ガイドに従いますか？'))return;localStorage.setItem(key,'1')}await joinRadioRoom(roomId)}
+
+try{
+  render();
+  launchRender(APP.onboarded?99:0);
+  if(APP.onboarded) showInstallHint();
+}catch(err){
+  console.error("Cotorie boot error:",err);
+  const main=document.querySelector("#main");
+  if(main){
+    main.innerHTML=`<div class="hero"><h1>コトリエ 🐦</h1><p class="muted">読み込みで問題が起きました。ページを再読み込みしてください。</p></div>`;
+  }
+  document.querySelector("#launch")?.classList.add("hidden");
+}
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    });
+}
+
+</script>
+</body></html>
